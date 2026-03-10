@@ -23,8 +23,9 @@ export const tokens = {
   },
   font: {
     display: "'Syne', sans-serif",
-    body:    "'DM Sans', sans-serif",
+    body:    "'Inter', sans-serif",
     mono:    "'DM Mono', monospace",
+    inter:   "'Inter', sans-serif",
   },
   radius: {
     sm:   '6px',
