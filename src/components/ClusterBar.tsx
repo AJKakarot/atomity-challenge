@@ -58,7 +58,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '10px',
+        gap: '5px',
         flex: 1,
         background: 'none',
         border: 'none',
@@ -80,8 +80,8 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
         }
         style={{
           fontFamily: tokens.font.mono,
-          fontSize: 'clamp(0.65rem, 1.5vw, 0.78rem)',
-          color: isActive ? tokens.colors.accentGreen : tokens.colors.textMuted,
+          fontSize: 'clamp(0.6rem, 1.2vw, 0.72rem)',
+          color: isActive ? tokens.colors.accentGreen : tokens.colors.textSecondary,
           fontWeight: 500,
           transition: 'color 0.25s ease',
         }}
@@ -93,7 +93,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
       <div
         style={{
           width: '100%',
-          height: '180px',
+          height: 'clamp(80px, 14vh, 130px)',
           display: 'flex',
           alignItems: 'flex-end',
           background: tokens.colors.barTrack,
@@ -117,7 +117,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
               ? `linear-gradient(to top, ${tokens.colors.accentGreen}, color-mix(in srgb, ${tokens.colors.accentGreen} 70%, white))`
               : tokens.colors.barFill,
             borderRadius: tokens.radius.sm,
-            opacity: isActive ? 1 : 0.55,
+            opacity: isActive ? 1 : 0.85,
             transition: 'opacity 0.2s ease, background 0.25s ease',
             boxShadow: isActive ? tokens.shadow.glow : 'none',
           }}
@@ -144,7 +144,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
       <span
         style={{
           fontFamily: tokens.font.body,
-          fontSize: 'clamp(0.72rem, 1.5vw, 0.85rem)',
+          fontSize: 'clamp(0.65rem, 1.2vw, 0.78rem)',
           fontWeight: isActive ? 600 : 400,
           color: isActive ? tokens.colors.textPrimary : tokens.colors.textSecondary,
           transition: 'all 0.25s ease',
