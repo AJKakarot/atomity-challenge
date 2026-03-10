@@ -9,12 +9,14 @@ import { Badge } from './Badge';
 export const HeroSection: React.FC = () => (
   <section
     style={{
-      minHeight: '62vh',
+      height: '100vh',
+      minHeight: '100vh',
       display: 'flex',
       alignItems: 'center',
-      position: 'relative',
+      scrollSnapAlign: 'start',
+      scrollSnapStop: 'always',
       overflow: 'hidden',
-      paddingTop: '0',
+      position: 'relative',
     }}
     aria-label="Hero"
   >
@@ -35,7 +37,7 @@ export const HeroSection: React.FC = () => (
       }}
     />
 
-    <div className="section-wrapper" style={{ width: '100%', position: 'relative', zIndex: 1, paddingBlockStart: 'clamp(1rem, 4vh, 2rem)' }}>
+    <div className="section-wrapper" style={{ width: '100%', position: 'relative', zIndex: 1, paddingBlockStart: 'clamp(4rem, 8vh, 6rem)' }}>
       <motion.div
         initial={{ opacity: 0, y: 32 }}
         animate={{ opacity: 1, y: 0 }}

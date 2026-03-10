@@ -11,7 +11,7 @@
   --color-bg-card-hover:   #f9faf6;
 
   /* Borders */
-  --color-border-subtle:   #cacdc4;
+  --color-border-subtle:   #d4d7ce;
   --color-border-accent:   #3ddc84;
 
   /* Text */
@@ -28,7 +28,7 @@
 
   /* Chart */
   --color-bar-fill:        #3ddc84;
-  --color-bar-track:       #e2e4dc;
+  --color-bar-track:       #d0d4c8;
 
   /* Shadows */
   --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
@@ -69,10 +69,13 @@
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
   margin: 0;
+  height: 100%;
+  overflow: hidden;
   font-family: 'Inter', sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   font-optical-sizing: auto;
@@ -80,6 +83,13 @@ body {
   color: var(--color-text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
 }
 
 /* ─── Modern CSS: Fluid type with clamp() ──────────────────────── */
@@ -186,7 +196,29 @@ body {
 /* ─── Logical properties for layout ───────────────────────────── */
 .section-wrapper {
   padding-inline: clamp(1rem, 5vw, 4rem);
-  padding-block: clamp(3rem, 8vh, 6rem);
+  padding-block: clamp(1rem, 3vh, 2rem);
   max-inline-size: 1200px;
   margin-inline: auto;
+}
+
+/* ─── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .section-wrapper {
+    padding-inline: 1rem;
+    padding-block: 1rem;
+  }
+
+  .card {
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-display {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+
+  .section-wrapper {
+    padding-inline: 0.75rem;
+  }
 }

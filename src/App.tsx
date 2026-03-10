@@ -65,7 +65,7 @@ export default function App() {
       <div style={{ background: tokens.colors.bgPrimary, minHeight: '100vh' }}>
         <Nav />
         <main>
-          <div style={{ paddingTop: '56px' }}>
+          <div style={{ paddingTop: '0' }}>
             <HeroSection />
             <div id="feature">
               <FeatureSection />
