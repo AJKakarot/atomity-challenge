@@ -38,18 +38,28 @@ export const FeatureSection: React.FC = () => {
       ref={sectionRef}
       aria-label="Cloud cluster cost intelligence"
       style={{
-        minHeight: '100vh',
+        minHeight: 'auto',
         display: 'flex',
         alignItems: 'center',
         background: tokens.colors.bgPrimary,
         transition: 'background 0.3s ease',
+        paddingBlockStart: 'clamp(1rem, 3vh, 2rem)',
       }}
     >
       <div className="section-wrapper" style={{ width: '100%' }}>
 
         {/* ── Header ── */}
         <div style={{ marginBottom: 'clamp(2rem, 5vh, 3.5rem)' }}>
-          <p className="text-section-label" style={{ marginBottom: '12px' }}>
+          <p
+            className="text-section-label"
+            style={{
+              marginBottom: '12px',
+              fontFamily: tokens.font.inter,
+              fontWeight: 500,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+            }}
+          >
             ◆ Cost Intelligence
           </p>
           <motion.div
@@ -78,6 +88,7 @@ export const FeatureSection: React.FC = () => {
                 maxWidth: '520px',
                 lineHeight: 1.65,
                 fontWeight: 300,
+                fontFeatureSettings: "'cv02', 'cv03', 'cv04', 'cv11'",
               }}
             >
               Drill into every dollar across CPU, RAM, storage, and GPU.
@@ -134,23 +145,26 @@ export const FeatureSection: React.FC = () => {
               >
                 <p
                   style={{
-                    fontFamily: tokens.font.mono,
+                    fontFamily: tokens.font.inter,
                     fontSize: '0.68rem',
                     color: tokens.colors.textMuted,
                     marginBottom: '2px',
                     letterSpacing: '0.08em',
                     textTransform: 'uppercase',
+                    fontWeight: 500,
                   }}
                 >
                   Total Spend
                 </p>
                 <p
                   style={{
-                    fontFamily: tokens.font.display,
+                    fontFamily: tokens.font.inter,
                     fontSize: 'clamp(1.4rem, 3vw, 1.9rem)',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     color: tokens.colors.textPrimary,
-                    letterSpacing: '-0.03em',
+                    letterSpacing: '-0.02em',
+                    fontVariantNumeric: 'tabular-nums',
+                    fontFeatureSettings: "'tnum', 'cv02', 'cv03', 'cv04', 'cv11'",
                   }}
                 >
                   ${totalSpend.toLocaleString()}

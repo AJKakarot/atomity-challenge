@@ -32,7 +32,7 @@ const variantStyles: Record<string, React.CSSProperties> = {
   },
   mono: {
     background: tokens.colors.bgSecondary,
-    color: tokens.colors.textMuted,
+    color: tokens.colors.textSecondary,
     border: `1px solid ${tokens.colors.borderSubtle}`,
   },
 };
@@ -46,7 +46,7 @@ export const Badge: React.FC<BadgeProps> = ({ children, variant = 'default' }) =
       paddingInline: '10px',
       paddingBlock: '3px',
       borderRadius: tokens.radius.full,
-      fontFamily: tokens.font.mono,
+      fontFamily: tokens.font.inter,
       fontSize: '0.68rem',
       fontWeight: 500,
       letterSpacing: '0.04em',

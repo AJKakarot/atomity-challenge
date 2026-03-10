@@ -25,10 +25,10 @@ const Nav: React.FC = () => (
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '14px clamp(1rem, 5vw, 4rem)',
-      background: `color-mix(in srgb, var(--color-bg-primary) 85%, transparent)`,
+      background: `color-mix(in srgb, var(--color-bg-primary) 92%, transparent)`,
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
-      borderBottom: `1px solid ${tokens.colors.borderSubtle}`,
+      borderBottom: `1px solid var(--color-border-subtle)`,
       transition: 'background 0.3s ease',
     }}
     aria-label="Main navigation"
@@ -65,7 +65,7 @@ export default function App() {
       <div style={{ background: tokens.colors.bgPrimary, minHeight: '100vh' }}>
         <Nav />
         <main>
-          <div style={{ paddingTop: '60px' }}>
+          <div style={{ paddingTop: '56px' }}>
             <HeroSection />
             <div id="feature">
               <FeatureSection />
