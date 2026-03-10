@@ -9,11 +9,12 @@ import { Badge } from './Badge';
 export const HeroSection: React.FC = () => (
   <section
     style={{
-      minHeight: '80vh',
+      minHeight: '62vh',
       display: 'flex',
       alignItems: 'center',
       position: 'relative',
       overflow: 'hidden',
+      paddingTop: '0',
     }}
     aria-label="Hero"
   >
@@ -34,7 +35,7 @@ export const HeroSection: React.FC = () => (
       }}
     />
 
-    <div className="section-wrapper" style={{ width: '100%', position: 'relative', zIndex: 1 }}>
+    <div className="section-wrapper" style={{ width: '100%', position: 'relative', zIndex: 1, paddingBlockStart: 'clamp(1rem, 4vh, 2rem)' }}>
       <motion.div
         initial={{ opacity: 0, y: 32 }}
         animate={{ opacity: 1, y: 0 }}
@@ -79,6 +80,7 @@ export const HeroSection: React.FC = () => (
             lineHeight: 1.7,
             fontWeight: 300,
             marginBottom: '40px',
+            fontFeatureSettings: "'cv02', 'cv03', 'cv04', 'cv11'",
           }}
         >
           Sovereign AI workload optimization with real-time cluster cost visibility
