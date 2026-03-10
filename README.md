@@ -82,21 +82,22 @@ Inter is loaded as a variable font (weight 100–900, optical sizing 14–32) vi
 
 ### The pipeline
 
-```
-JSONPlaceholder GET /users
-        ↓
-10 user objects (JSON)
-        ↓
-.slice(0, 4) → take first 4 users
-        ↓
-Deterministic transform:
-  seed = user.id × 137
-  scale = [1.0, 0.74, 0.50, 0.25]
-  cpu = round(2450 × scale + seed % 100)
-  ram = round(1360 × scale + seed % 60)
-  ... etc.
-        ↓
-4 ClusterMetric objects → rendered as bars + table rows
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant TQ as TanStack Query
+    participant API as JSONPlaceholder
+
+    B->>TQ: useClusterData()
+    alt Cache fresh (< 5 min)
+        TQ-->>B: Instant render from cache
+    else Cache stale or empty
+        TQ->>API: GET /users
+        API-->>TQ: 10 user objects
+        TQ->>TQ: .slice(0,4) → deterministic transform
+        TQ-->>B: 4 ClusterMetric objects
+        Note over TQ: Cached 5 min (staleTime)<br/>Kept 10 min (gcTime)
+    end
 ```
 
 No cloud cost API exists publicly without auth keys. I transform JSONPlaceholder user data deterministically — same input always produces the same output — so the data looks realistic and stable across page loads.
@@ -127,6 +128,29 @@ Three async states are handled explicitly:
 ---
 
 ## Component Structure
+
+```mermaid
+graph TD
+  App["App.tsx<br/><small>QueryClientProvider + Nav</small>"]
+  App --> Hero["HeroSection<br/><small>scroll CTA</small>"]
+  App --> Feature["FeatureSection<br/><small>dashboard: bars + table + KPI</small>"]
+
+  Feature --> ClusterBar["ClusterBar ×4<br/><small>animated vertical bar</small>"]
+  Feature --> MetricRow["MetricRow ×4<br/><small>table row with count-up</small>"]
+  Feature --> Badge["Badge<br/><small>pill labels</small>"]
+  Feature --> Skeleton["LoadingSkeleton<br/><small>pulsing placeholder</small>"]
+
+  ClusterBar --> useCountUp["useCountUp<br/><small>RAF number animation</small>"]
+  MetricRow --> useCountUp
+  Feature --> useClusterData["useClusterData<br/><small>TanStack Query + transform</small>"]
+
+  App --> ThemeToggle["ThemeToggle<br/><small>dark/light</small>"]
+
+  style App fill:#1a2030,color:#e8edf2,stroke:#3ddc84
+  style Feature fill:#1a2030,color:#e8edf2,stroke:#3ddc84
+  style useClusterData fill:#0d1117,color:#3ddc84,stroke:#3ddc84
+  style useCountUp fill:#0d1117,color:#3ddc84,stroke:#3ddc84
+```
 
 ```
 src/
