@@ -5,19 +5,19 @@
 /* ─── Design Tokens ────────────────────────────────────────────── */
 :root {
   /* Backgrounds */
-  --color-bg-primary:      #f4f5f0;
-  --color-bg-secondary:    #eaebe5;
+  --color-bg-primary:      #f0f1ec;
+  --color-bg-secondary:    #e3e4de;
   --color-bg-card:         #ffffff;
   --color-bg-card-hover:   #f9faf6;
 
   /* Borders */
-  --color-border-subtle:   #e2e4dc;
+  --color-border-subtle:   #cacdc4;
   --color-border-accent:   #3ddc84;
 
   /* Text */
-  --color-text-primary:    #0d1117;
-  --color-text-secondary:  #3a3f35;
-  --color-text-muted:      #828878;
+  --color-text-primary:    #080d0a;
+  --color-text-secondary:  #1e2420;
+  --color-text-muted:      #5a5f58;
 
   /* Accent */
   --color-accent-green:    #3ddc84;
@@ -73,7 +73,9 @@ html {
 
 body {
   margin: 0;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-optical-sizing: auto;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -82,7 +84,7 @@ body {
 
 /* ─── Modern CSS: Fluid type with clamp() ──────────────────────── */
 .text-display {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
   line-height: 1.05;
@@ -90,7 +92,7 @@ body {
 }
 
 .text-section-label {
-  font-family: 'DM Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: clamp(0.65rem, 1.2vw, 0.75rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -98,7 +100,20 @@ body {
 }
 
 .text-mono {
-  font-family: 'DM Mono', monospace;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── Inter Utilities ───────────────────────────────────────────── */
+.font-inter-light    { font-family: 'Inter', sans-serif; font-weight: 300; }
+.font-inter-regular  { font-family: 'Inter', sans-serif; font-weight: 400; }
+.font-inter-medium   { font-family: 'Inter', sans-serif; font-weight: 500; }
+.font-inter-semibold { font-family: 'Inter', sans-serif; font-weight: 600; }
+.font-inter-bold     { font-family: 'Inter', sans-serif; font-weight: 700; }
+
+.font-inter-tabular {
+  font-family: 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }
 
 /* ─── Card Base ────────────────────────────────────────────────── */
@@ -141,6 +156,10 @@ body {
   background: var(--color-bar-fill);
   border-radius: 4px;
   transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.cluster-bar-button:hover .cluster-bar-fill {
+  opacity: 1;
 }
 
 /* ─── Reduced Motion ───────────────────────────────────────────── */
