@@ -46,13 +46,7 @@ All easing uses `[0.23, 1, 0.32, 1]` — a custom cubic-bezier that accelerates 
 
 ### Design tokens — defined once, referenced everywhere
 
-```
-src/tokens/index.ts    →  TypeScript constants referencing CSS variable names
-src/index.css :root    →  Light mode CSS custom properties
-src/index.css .dark    →  Dark mode CSS custom properties (toggled via class on <html>)
-```
-
-No component contains a hardcoded hex value. Every color, shadow, radius, and font-family is read from `tokens.*`, which maps to `var(--color-*)` / `var(--shadow-*)`. Dark mode works by toggling `.dark` on `<html>` — all token values swap automatically.
+Tokens live in `src/tokens/index.ts` (TypeScript) and `src/index.css` (`:root` for light, `.dark` for dark mode). No component contains a hardcoded hex value. Every color, shadow, radius, and font-family is read from `tokens.*`, which maps to `var(--color-*)` / `var(--shadow-*)`. Dark mode works by toggling `.dark` on `<html>` — all token values swap automatically.
 
 Derived colors use `color-mix()` in CSS rather than pre-computed values:
 ```css
@@ -127,7 +121,7 @@ Three async states are handled explicitly:
 
 ---
 
-## Component Structure
+## Architecture
 
 ```mermaid
 graph TD
