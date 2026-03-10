@@ -27,13 +27,15 @@ const Cell: React.FC<{ value: number; highlight: boolean; inView: boolean; delay
   return (
     <td
       style={{
-        padding: '14px 16px',
-        fontFamily: tokens.font.mono,
-        fontSize: 'clamp(0.7rem, 1.5vw, 0.82rem)',
+        padding: '7px 12px',
+        fontFamily: tokens.font.inter,
+        fontSize: 'clamp(0.65rem, 1.2vw, 0.76rem)',
         color: highlight ? tokens.colors.textPrimary : tokens.colors.textMuted,
         textAlign: 'right',
         whiteSpace: 'nowrap',
         transition: 'color 0.25s ease',
+        fontVariantNumeric: 'tabular-nums',
+        fontFeatureSettings: "'tnum'",
       }}
     >
       {value === 0 ? (
@@ -72,9 +74,9 @@ export const MetricRow: React.FC<MetricRowProps> = ({
     >
       <td
         style={{
-          padding: '14px 16px',
+          padding: '7px 12px',
           fontFamily: tokens.font.body,
-          fontSize: 'clamp(0.75rem, 1.5vw, 0.88rem)',
+          fontSize: 'clamp(0.65rem, 1.2vw, 0.76rem)',
           fontWeight: isActive ? 700 : 500,
           color: isActive ? tokens.colors.accentGreen : tokens.colors.textPrimary,
           whiteSpace: 'nowrap',
@@ -90,28 +92,32 @@ export const MetricRow: React.FC<MetricRowProps> = ({
       <Cell value={cluster.gpu}     highlight={isActive} inView={inView} delay={delay + 0.25} />
       <td
         style={{
-          padding: '14px 16px',
-          fontFamily: tokens.font.mono,
-          fontSize: 'clamp(0.7rem, 1.5vw, 0.82rem)',
+          padding: '7px 12px',
+          fontFamily: tokens.font.inter,
+          fontSize: 'clamp(0.65rem, 1.2vw, 0.76rem)',
           color: cluster.efficiency >= 20
             ? tokens.colors.accentSuccess
             : tokens.colors.accentWarning,
           textAlign: 'right',
           whiteSpace: 'nowrap',
+          fontVariantNumeric: 'tabular-nums',
+          fontFeatureSettings: "'tnum'",
         }}
       >
         {cluster.efficiency}%
       </td>
       <td
         style={{
-          padding: '14px 16px',
-          fontFamily: tokens.font.mono,
-          fontSize: 'clamp(0.75rem, 1.5vw, 0.88rem)',
-          fontWeight: 700,
+          padding: '7px 12px',
+          fontFamily: tokens.font.inter,
+          fontSize: 'clamp(0.65rem, 1.2vw, 0.76rem)',
+          fontWeight: 600,
           color: isActive ? tokens.colors.accentGreen : tokens.colors.textPrimary,
           textAlign: 'right',
           whiteSpace: 'nowrap',
           transition: 'color 0.25s ease',
+          fontVariantNumeric: 'tabular-nums',
+          fontFeatureSettings: "'tnum'",
         }}
       >
         ${totalDisplayed.toLocaleString()}
