@@ -24,6 +24,7 @@ export const FeatureSection: React.FC = () => {
 
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: '-80px' });
+  const isReduced = prefersReduced();
 
   const handleBarClick = (id: string) => {
     setActiveId(prev => (prev === id ? null : id));
@@ -47,46 +48,53 @@ export const FeatureSection: React.FC = () => {
       <div className="section-wrapper" style={{ width: '100%' }}>
 
         {/* ── Header ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          style={{ marginBottom: 'clamp(2rem, 5vh, 3.5rem)' }}
-        >
+        <div style={{ marginBottom: 'clamp(2rem, 5vh, 3.5rem)' }}>
           <p className="text-section-label" style={{ marginBottom: '12px' }}>
             ◆ Cost Intelligence
           </p>
-          <h2
-            className="text-display"
-            style={{
-              fontFamily: tokens.font.display,
-              color: tokens.colors.textPrimary,
-              marginBottom: '16px',
-            }}
+          <motion.div
+            initial={isReduced ? {} : { opacity: 0, y: 32 }}
+            animate={inView && !isReduced ? { opacity: 1, y: 0 } : {}}
+            transition={
+              isReduced ? undefined : { duration: 0.6, ease: [0.23, 1, 0.32, 1] }
+            }
           >
-            Cluster spend,{' '}
-            <span style={{ color: tokens.colors.accentGreen }}>demystified.</span>
-          </h2>
-          <p
-            style={{
-              fontFamily: tokens.font.body,
-              fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
-              color: tokens.colors.textSecondary,
-              maxWidth: '520px',
-              lineHeight: 1.65,
-              fontWeight: 300,
-            }}
-          >
-            Drill into every dollar across CPU, RAM, storage, and GPU.
-            Click any cluster to isolate its cost breakdown.
-          </p>
-        </motion.div>
+            <h2
+              className="text-display"
+              style={{
+                fontFamily: tokens.font.display,
+                color: tokens.colors.textPrimary,
+                marginBottom: '16px',
+              }}
+            >
+              Cluster spend,{' '}
+              <span style={{ color: tokens.colors.accentGreen }}>demystified.</span>
+            </h2>
+            <p
+              style={{
+                fontFamily: tokens.font.body,
+                fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
+                color: tokens.colors.textSecondary,
+                maxWidth: '520px',
+                lineHeight: 1.65,
+                fontWeight: 300,
+              }}
+            >
+              Drill into every dollar across CPU, RAM, storage, and GPU.
+              Click any cluster to isolate its cost breakdown.
+            </p>
+          </motion.div>
+        </div>
 
         {/* ── Dashboard Card ── */}
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
+          initial={isReduced ? {} : { opacity: 0, y: 40 }}
+          animate={inView && !isReduced ? { opacity: 1, y: 0 } : {}}
+          transition={
+            isReduced
+              ? undefined
+              : { duration: 0.7, delay: 0.15, ease: [0.23, 1, 0.32, 1] }
+          }
           className="card"
           style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)', overflow: 'hidden' }}
         >
@@ -107,9 +115,9 @@ export const FeatureSection: React.FC = () => {
               <Badge variant="default">Aggregated by: Cluster</Badge>
               {!isLoading && !isError && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8 }}
+                  initial={isReduced ? {} : { opacity: 0, scale: 0.8 }}
+                  animate={inView && !isReduced ? { opacity: 1, scale: 1 } : {}}
+                  transition={isReduced ? undefined : { delay: 0.8 }}
                 >
                   <Badge variant="success">Live Data ✓</Badge>
                 </motion.div>
@@ -119,9 +127,9 @@ export const FeatureSection: React.FC = () => {
             {/* Total spend KPI */}
             {!isLoading && !isError && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 1 }}
+                initial={isReduced ? {} : { opacity: 0 }}
+                animate={inView && !isReduced ? { opacity: 1 } : {}}
+                transition={isReduced ? undefined : { delay: 1 }}
                 style={{ textAlign: 'right' }}
               >
                 <p
@@ -174,8 +182,12 @@ export const FeatureSection: React.FC = () => {
               {/* ── Active cluster info strip ── */}
               {activeCluster && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  initial={isReduced ? {} : { opacity: 0, height: 0 }}
+                  animate={
+                    inView && !isReduced
+                      ? { opacity: 1, height: 'auto' }
+                      : { opacity: 1, height: 'auto' }
+                  }
                   exit={{ opacity: 0, height: 0 }}
                   style={{
                     background: tokens.colors.accentGreenDim,
@@ -250,7 +262,7 @@ export const FeatureSection: React.FC = () => {
                       total={TOTAL(cluster)}
                       maxTotal={MAX_TOTAL}
                       isActive={activeId === cluster.id}
-                      isReduced={prefersReduced()}
+                      isReduced={isReduced}
                       onClick={() => handleBarClick(cluster.id)}
                       animDelay={i * 0.1}
                       inView={inView}
@@ -261,9 +273,13 @@ export const FeatureSection: React.FC = () => {
 
               {/* ── Divider ── */}
               <motion.hr
-                initial={{ scaleX: 0 }}
-                animate={inView ? { scaleX: 1 } : {}}
-                transition={{ duration: 0.6, delay: 0.7 }}
+                initial={isReduced ? {} : { scaleX: 0 }}
+                animate={
+                  inView && !isReduced ? { scaleX: 1 } : { scaleX: 1 }
+                }
+                transition={
+                  isReduced ? undefined : { duration: 0.6, delay: 0.7 }
+                }
                 style={{
                   border: 'none',
                   borderTop: `1px solid ${tokens.colors.borderSubtle}`,
@@ -321,9 +337,9 @@ export const FeatureSection: React.FC = () => {
 
         {/* ── Footer note ── */}
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 1.2 }}
+          initial={isReduced ? {} : { opacity: 0 }}
+          animate={inView && !isReduced ? { opacity: 1 } : { opacity: 1 }}
+          transition={isReduced ? undefined : { delay: 1.2 }}
           style={{
             marginTop: '1.25rem',
             fontFamily: tokens.font.mono,
