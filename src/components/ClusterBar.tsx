@@ -60,7 +60,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '5px',
+        gap: '4px',
         flex: 1,
         background: 'none',
         border: 'none',
@@ -123,12 +123,12 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
             opacity: isActive ? 1 : 0.85,
             transition: 'opacity 0.2s ease, background 0.25s ease, box-shadow 0.3s ease',
             boxShadow: isActive
-              ? `${tokens.shadow.glow}, inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 20px rgba(61,220,132,0.35)`
-              : 'none',
+              ? `inset 0 -4px 12px rgba(61,220,132,0.3), 0 2px 12px rgba(61,220,132,0.25)`
+              : `inset 0 -2px 8px rgba(61,220,132,0.2), 0 2px 10px rgba(61,220,132,0.2)`,
             position: 'relative',
           }}
         />
-        {/* Active indicator stripe at top */}
+        {/* Active indicator — subtle glow at fill top */}
         {isActive && (
           <motion.div
             layoutId="bar-indicator"
@@ -137,24 +137,31 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
               top: `${100 - heightPct}%`,
               left: 0,
               right: 0,
-              height: '3px',
-              background: 'white',
-              opacity: 0.7,
-              borderRadius: '2px 2px 0 0',
+              height: '2px',
+              background: `linear-gradient(to bottom, rgba(255,255,255,0.4), transparent)`,
+              pointerEvents: 'none',
             }}
           />
         )}
       </div>
 
-      {/* Cluster name */}
+      {/* Cluster name — visually tied to bar */}
       <span
         style={{
+          display: 'block',
+          width: '100%',
+          textAlign: 'center',
+          padding: '4px 8px',
           fontFamily: tokens.font.body,
           fontSize: 'clamp(0.65rem, 1.2vw, 0.78rem)',
-          fontWeight: isActive ? 600 : 400,
+          fontWeight: isActive ? 600 : 500,
           color: isActive ? tokens.colors.textPrimary : tokens.colors.textSecondary,
           transition: 'all 0.25s ease',
           letterSpacing: '-0.01em',
+          background: isActive
+            ? 'var(--color-accent-green-dim)'
+            : 'color-mix(in srgb, var(--color-bar-track) 35%, transparent)',
+          borderRadius: '6px',
         }}
       >
         {name}
