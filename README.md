@@ -1,297 +1,245 @@
-# Atomity — Cluster Cost Intelligence
+# Atomity Frontend Challenge — Cluster Cost Intelligence
 
-**React 18 · TypeScript · Framer Motion · TanStack Query v5 · Tailwind CSS · Vite**
-
-A scroll-snap, single-page dashboard that visualises cloud cluster costs with animated bar charts, interactive table breakdowns, and count-up numbers — all powered by a real API call cached via TanStack Query.
+**Option A** (0:30–0:40) · React 18 · TypeScript · Framer Motion · TanStack Query v5 · Tailwind CSS · Vite
 
 ---
 
-## Quick Start
+## Which Feature & Why
 
-```bash
-npm install
-npm run dev        # → http://localhost:5173
-```
+I chose **Option A** — the cluster cost breakdown with a bar chart and detailed cost table. Three reasons:
 
-```bash
-npm run build      # production build
-npm run preview    # preview the build locally
-```
+1. **Rich animation surface** — bars growing upward, table rows staggering in from the left, dollar values counting up from zero, hover feedback with spring physics, and a sliding `layoutId` indicator between active bars. This gives me more opportunities to demonstrate scroll-triggered, physically-natural motion than a simpler card layout would.
+2. **Real data story** — cost figures (CPU, RAM, Storage, Network, GPU per cluster) map cleanly to an API response and back, making the fetch → transform → render pipeline feel genuine.
+3. **Interactive depth** — clicking any bar highlights that cluster across both the chart and the table simultaneously, filtering the view. This goes beyond what the reference video shows and adds a "we didn't expect that" interaction layer.
 
 ---
 
-## Architecture Overview
+## Approach to Animation
 
-```mermaid
-graph TD
-    A[main.tsx] --> B[App.tsx]
-    B --> C[QueryClientProvider]
-    C --> D[Nav]
-    C --> E[HeroSection]
-    C --> F[FeatureSection]
+Every animation is **scroll-triggered** using Framer Motion's `useInView` hook with `{ once: true, margin: '-80px' }`. Nothing animates on page load — the user must scroll the FeatureSection into view before anything moves.
 
-    F --> G[ClusterBar ×4]
-    F --> H[MetricRow ×4]
-    F --> I[Badge]
-    F --> J[LoadingSkeleton]
+The animation sequence is deliberately choreographed:
 
-    D --> K[ThemeToggle]
+| Step | Element | Delay | Duration | Effect |
+|------|---------|-------|----------|--------|
+| 1 | Section heading | 0ms | 600ms | Fade up (y: 32 → 0) |
+| 2 | Dashboard card | 150ms | 700ms | Fade up (y: 40 → 0) |
+| 3 | Bars A → D | 100ms stagger | 900ms each | Height grows from 0%, count-up numbers |
+| 4 | Table rows 1 → 4 | 90ms stagger | 450ms each | Slide in from left (x: -16 → 0) |
+| 5 | Divider | 700ms | 600ms | Scale X from 0 to 1 |
+| 6 | KPI + badges | 800–1200ms | 300ms | Fade in |
 
-    style A fill:#1a2030,stroke:#3ddc84,color:#e8edf2
-    style B fill:#1a2030,stroke:#3ddc84,color:#e8edf2
-    style C fill:#1a2030,stroke:#3ddc84,color:#e8edf2
-    style F fill:#1a2030,stroke:#3ddc84,color:#e8edf2
-```
+All easing uses `[0.23, 1, 0.32, 1]` — a custom cubic-bezier that accelerates quickly then decelerates slowly, creating motion that feels physically natural rather than mechanical.
 
----
+**Hover interactions:**
+- `ClusterBar` — `whileHover: scale 1.03` / `whileTap: scale 0.97` with spring physics (`stiffness: 300, damping: 20`). Bar fill opacity transitions from 0.85 → 1 on hover via CSS.
+- `MetricRow` — background color transitions to `--color-bg-card-hover` on mouse enter.
+- Active bar selection — `layoutId="bar-indicator"` makes a white stripe animate smoothly between bars without manual positioning.
 
-## Data Flow — API Call to Render
+**Count-up numbers** — a custom `useCountUp` hook uses `requestAnimationFrame` with cubic ease-out (`1 - (1 - progress)³`) to animate dollar values from 0 to their target. This runs in the same scroll-triggered cycle as the bars.
 
-```mermaid
-sequenceDiagram
-    participant U as User Scrolls
-    participant FS as FeatureSection
-    participant TQ as TanStack Query
-    participant API as jsonplaceholder.typicode.com
-    participant Cache as Query Cache
-
-    U->>FS: Section enters viewport
-    FS->>TQ: useClusterData()
-    TQ->>Cache: Check queryKey ["cluster-costs"]
-
-    alt Cache MISS (first load)
-        Cache-->>TQ: No cached data
-        TQ->>API: GET /users
-        API-->>TQ: 10 user objects (JSON)
-        TQ->>TQ: Transform → 4 ClusterMetric objects
-        TQ->>Cache: Store (staleTime: 5min, gcTime: 10min)
-        TQ-->>FS: { data: ClusterMetric[], isLoading: false }
-    else Cache HIT (revisit within 5min)
-        Cache-->>TQ: Cached ClusterMetric[]
-        TQ-->>FS: { data: ClusterMetric[], isLoading: false }
-        Note over TQ,API: Zero network requests
-    end
-
-    FS->>FS: Render bars + table + count-up numbers
-```
-
-### API Transform Pipeline
-
-```mermaid
-flowchart LR
-    A["GET /users"] --> B["10 User Objects"]
-    B --> C[".slice(0, 4)"]
-    C --> D["Deterministic Math<br/>seed = id × 137<br/>scale = [1.0, 0.74, 0.50, 0.25]"]
-    D --> E["4 ClusterMetric Objects"]
-
-    E --> F["Cluster A<br/>cpu: $2,587<br/>ram: $1,497<br/>gpu: $957"]
-    E --> G["Cluster B<br/>cpu: $1,950<br/>ram: $1,066<br/>gpu: $0"]
-    E --> H["Cluster C<br/>cpu: $1,362<br/>ram: $743<br/>gpu: $547"]
-    E --> I["Cluster D<br/>cpu: $750<br/>ram: $400<br/>gpu: $0"]
-
-    style D fill:#3ddc84,stroke:#1a2030,color:#0d1117
-```
+**Reduced motion** — every animation checks `prefers-reduced-motion: reduce`. When set, Framer Motion props are empty objects (`initial={}`), `useCountUp` jumps instantly to the target value, and CSS transitions are forced to `0.01ms` via a global media query.
 
 ---
 
-## Animation Sequence
+## Token & Style Architecture
 
-All animations are **scroll-triggered** via `useInView` — nothing animates on page load.
+### Design tokens — defined once, referenced everywhere
 
-```mermaid
-gantt
-    title Animation Timeline (after scroll into view)
-    dateFormat X
-    axisFormat %Lms
-
-    section Entrance
-    Header fade + slide up       :h, 0, 600
-    Dashboard card fade in       :c, 150, 700
-
-    section Bars
-    Bar A grow + count-up        :b1, 100, 900
-    Bar B grow + count-up        :b2, 200, 900
-    Bar C grow + count-up        :b3, 300, 900
-    Bar D grow + count-up        :b4, 400, 900
-
-    section Table
-    Row 1 slide in               :r1, 500, 450
-    Row 2 slide in               :r2, 590, 450
-    Row 3 slide in               :r3, 680, 450
-    Row 4 slide in               :r4, 770, 450
-
-    section Details
-    Divider scale                :d, 700, 600
-    Live Data badge              :lb, 800, 300
-    Total Spend KPI              :ts, 1000, 300
-    Footer note                  :fn, 1200, 300
+```
+src/tokens/index.ts    →  TypeScript constants referencing CSS variable names
+src/index.css :root    →  Light mode CSS custom properties
+src/index.css .dark    →  Dark mode CSS custom properties (toggled via class on <html>)
 ```
 
-Every animation respects `prefers-reduced-motion: reduce` — values appear instantly with zero motion.
+No component contains a hardcoded hex value. Every color, shadow, radius, and font-family is read from `tokens.*`, which maps to `var(--color-*)` / `var(--shadow-*)`. Dark mode works by toggling `.dark` on `<html>` — all token values swap automatically.
+
+Derived colors use `color-mix()` in CSS rather than pre-computed values:
+```css
+--color-accent-green-dim: color-mix(in srgb, #3ddc84 20%, transparent);
+```
+
+### Modern CSS features used
+
+| Feature | Where | Why |
+|---------|-------|-----|
+| `clamp()` | Every font-size, padding, and gap | Fluid scaling between breakpoints without media queries |
+| `color-mix()` | Dimmed accent colors, dark mode tints | Dynamic color derivation — no extra variables needed |
+| CSS custom properties | Full token system + dark mode | Single source of truth for all design values |
+| `container-type` + `@container` | `ClusterBar` label adapts at small widths | Component-level responsiveness, not viewport-level |
+| Logical properties | `padding-inline`, `max-inline-size`, `margin-inline` | Writing-direction-aware layout |
+| `scroll-snap-type: y mandatory` | `#root` container | Full-page snap scrolling between hero and dashboard |
+| `font-feature-settings` | Inter variable font | `cv02`, `cv03`, `cv04`, `cv11` for UI-optimized alternates |
+| `font-variant-numeric: tabular-nums` | All dollar and percentage columns | Column-aligned numbers in the cost table |
+
+### Typography
+
+Inter is loaded as a variable font (weight 100–900, optical sizing 14–32) via a single Google Fonts request. It's the sole typeface — used for display headings, body text, labels, and numeric data. `font-feature-settings` enables Inter's contextual alternates for a sharper UI appearance, and `tabular-nums` ensures financial figures align perfectly in table columns.
 
 ---
 
-## Token & Theming Architecture
+## Data Fetching & Caching
 
-```mermaid
-flowchart TB
-    subgraph CSS["index.css"]
-        ROOT[":root<br/>Light mode variables"]
-        DARK[".dark<br/>Dark mode variables"]
-    end
+### The pipeline
 
-    subgraph TS["tokens/index.ts"]
-        TOK["tokens.colors.*<br/>tokens.font.*<br/>tokens.radius.*<br/>tokens.shadow.*"]
-    end
-
-    subgraph Components
-        C1[ClusterBar]
-        C2[MetricRow]
-        C3[Badge]
-        C4[FeatureSection]
-    end
-
-    ROOT --> TOK
-    DARK --> TOK
-    TOK --> C1
-    TOK --> C2
-    TOK --> C3
-    TOK --> C4
-
-    TOGGLE["ThemeToggle<br/>toggles .dark on html"] -.-> ROOT
-    TOGGLE -.-> DARK
-
-    style TOK fill:#3ddc84,stroke:#1a2030,color:#0d1117
-    style TOGGLE fill:#3ddc84,stroke:#1a2030,color:#0d1117
+```
+JSONPlaceholder GET /users
+        ↓
+10 user objects (JSON)
+        ↓
+.slice(0, 4) → take first 4 users
+        ↓
+Deterministic transform:
+  seed = user.id × 137
+  scale = [1.0, 0.74, 0.50, 0.25]
+  cpu = round(2450 × scale + seed % 100)
+  ram = round(1360 × scale + seed % 60)
+  ... etc.
+        ↓
+4 ClusterMetric objects → rendered as bars + table rows
 ```
 
-**Zero hardcoded hex values in components.** Every color, shadow, and radius is read from `tokens`, which reference CSS custom properties. Dark mode works by toggling `.dark` on `<html>` — all values swap automatically via CSS.
+No cloud cost API exists publicly without auth keys. I transform JSONPlaceholder user data deterministically — same input always produces the same output — so the data looks realistic and stable across page loads.
+
+### TanStack Query v5 caching
+
+```ts
+useQuery({
+  queryKey: ['cluster-costs'],
+  queryFn: fetchClusterData,
+  staleTime: 5 * 60 * 1000,    // 5 minutes — no refetch on remount
+  gcTime: 10 * 60 * 1000,      // 10 minutes — kept in memory
+  retry: 2,
+})
+```
+
+**What to verify in DevTools Network tab:**
+- First visit: exactly **1 request** to `/users`, then loading skeleton → full UI
+- Revisit within 5 minutes: **0 requests**, instant render from cache
+- After 5 minutes: background refetch, UI updates silently
+- After 10 minutes: fresh fetch, skeleton shows briefly
+
+Three async states are handled explicitly:
+- **Loading** → pulsing skeleton placeholder (animated bars + table rows)
+- **Error** → alert message with `role="alert"`
+- **Success** → full interactive dashboard
 
 ---
 
-## Scroll Snap Layout
+## Component Structure
 
-```mermaid
-flowchart TB
-    subgraph ROOT["#root (scroll container)"]
-        direction TB
-        HERO["HeroSection<br/>height: 100vh<br/>scroll-snap-align: start"]
-        FEAT["FeatureSection<br/>height: 100vh<br/>scroll-snap-align: start<br/>overflow-y: auto"]
-    end
-
-    NAV["Nav (position: fixed, z-index: 100)"] -.-> ROOT
-
-    style ROOT fill:#1a2030,stroke:#3ddc84,color:#e8edf2
-    style NAV fill:#3ddc84,stroke:#1a2030,color:#0d1117
+```
+src/
+  tokens/
+    index.ts                   ← design tokens (colors, fonts, radii, shadows)
+  hooks/
+    useClusterData.ts          ← TanStack Query + API transform + cache config
+    useCountUp.ts              ← RAF number animation with cubic ease-out
+  components/
+    HeroSection.tsx            ← above-the-fold hero with scroll CTA
+    FeatureSection.tsx         ← main dashboard: header, bars, table, KPI
+    ClusterBar.tsx             ← single animated vertical bar + hover spring
+    MetricRow.tsx              ← table row with count-up cells + hover highlight
+    Badge.tsx                  ← pill label component (5 variants)
+    ThemeToggle.tsx            ← dark/light toggle (persisted to localStorage)
+    LoadingSkeleton.tsx        ← pulsing placeholder during fetch
+  App.tsx                      ← QueryClientProvider + Nav + layout
+  main.tsx                     ← React 18 createRoot
+  index.css                    ← CSS tokens, scroll-snap, responsive breakpoints
 ```
 
-The `#root` div is the scroll container with `scroll-snap-type: y mandatory`. Each section snaps to fill the full viewport. The FeatureSection has internal `overflow-y: auto` so the chart + table can scroll within its snap panel.
+Every UI element is **built from scratch** — no MUI, Chakra, shadcn, or any pre-built component library. The Badge, bars, table rows, skeleton, and theme toggle are all custom.
 
 ---
 
-## Project Structure
+## Libraries & Why
 
-```
-atomity-challenge/
-├── index.html                 ← Google Fonts (Inter variable), app shell
-├── package.json               ← dependencies, scripts
-├── vite.config.ts             ← Vite + React plugin
-├── tailwind.config.js         ← Tailwind configuration
-├── tsconfig.json              ← TypeScript strict mode
-└── src/
-    ├── main.tsx               ← React 18 createRoot
-    ├── App.tsx                ← QueryClientProvider, Nav, layout
-    ├── index.css              ← CSS variables, tokens, scroll-snap, responsive
-    ├── tokens/
-    │   └── index.ts           ← Design tokens (colors, fonts, radii, shadows)
-    ├── hooks/
-    │   ├── useClusterData.ts  ← TanStack Query: fetch, transform, cache
-    │   └── useCountUp.ts      ← RAF-based number animation with easing
-    └── components/
-        ├── HeroSection.tsx    ← Above-the-fold hero with scroll CTA
-        ├── FeatureSection.tsx ← Dashboard: bars + table + KPI
-        ├── ClusterBar.tsx     ← Animated vertical bar with hover spring
-        ├── MetricRow.tsx      ← Table row with count-up cells + hover
-        ├── Badge.tsx          ← Pill labels (5 variants)
-        ├── ThemeToggle.tsx    ← Dark/light mode toggle (localStorage)
-        └── LoadingSkeleton.tsx← Pulsing placeholder during fetch
-```
+| Library | Version | Reason |
+|---------|---------|--------|
+| React | 18 | Required by challenge |
+| TypeScript | 5 | Type-safe props, API response shapes, `as const` token inference |
+| Framer Motion | 11 | `useInView` for scroll triggers, `motion.div` for declarative animation, `layoutId` for shared layout transitions, `whileHover`/`whileTap` for interaction springs |
+| TanStack Query | 5 | Declarative async state (loading/error/success), `staleTime`/`gcTime` for smart caching, zero redundant fetches |
+| Tailwind CSS | 3.4 | Utility classes for quick layout scaffolding alongside custom CSS |
+| Vite | 5 | Fast dev server, instant HMR, optimized production builds |
 
 ---
 
-## Key Technical Decisions
+## Responsive Layout
 
-| Decision | Reasoning |
-|---|---|
-| **Inter as sole font** | Variable font (100–900 weight), `font-feature-settings` for UI alternates (`cv02–cv11`), `tabular-nums` for aligned cost columns |
-| **CSS Grid for card header** | `grid-template-columns: 1fr auto` keeps Total Spend KPI pinned top-right on all screen sizes |
-| **`useCountUp` custom hook** | 30-line `requestAnimationFrame` loop with cubic ease-out — no library dependency for number animation |
-| **JSONPlaceholder `/users`** | No public cloud cost API exists without auth. Deterministic transform on user data produces realistic, stable cluster metrics |
-| **`layoutId` for bar indicator** | Framer Motion animates the active-bar highlight between bars with zero manual positioning |
-| **`color-mix()` for derived colors** | Dimmed accents and hover tints computed in CSS — no pre-calculated values needed |
-| **Mandatory scroll-snap** | Full-page sections with `scroll-snap-type: y mandatory` create a focused, app-like navigation feel |
+| Breakpoint | Adaptations |
+|------------|-------------|
+| **1280px+** | Full layout, `max-inline-size: 1200px` centered |
+| **768px** | Tighter wrapper padding (`1rem`), smaller card border-radius (`12px`), compact card padding |
+| **480px** | Minimal inline padding (`0.75rem`), reduced display font size, smaller section labels |
+| **All sizes** | `clamp()` on every font-size, padding, gap, and bar height for fluid scaling |
+
+The bar chart uses `flex: 1` per bar with `clamp(3px, 1vw, 12px)` gaps — bars compress gracefully. The cost table scrolls horizontally on mobile with `-webkit-overflow-scrolling: touch`. The card header uses CSS Grid (`1fr auto`) so the Total Spend KPI stays pinned top-right at any width.
+
+Container queries on `.cluster-card-container` resize bar labels independently of the viewport.
 
 ---
 
 ## Accessibility
 
-- `prefers-reduced-motion: reduce` — all Framer Motion animations and CSS transitions are disabled
-- `aria-label` on sections, nav, bar chart, and table
-- `aria-pressed` on bar buttons for active state
-- `aria-live="polite"` on the active cluster info strip
-- `role="alert"` on error states
-- `role="img"` with label on the bar chart region
-- Semantic `<table>`, `<thead>`, `<th scope="col">` for the cost breakdown
-- Keyboard-focusable bar buttons and theme toggle
+- **Semantic HTML** — `<section>`, `<nav>`, `<main>`, `<table>`, `<thead>`, `<th scope="col">`, `<button>`
+- **ARIA** — `aria-label` on sections/nav/chart, `aria-pressed` on bar buttons, `aria-live="polite"` on active cluster strip, `role="alert"` on error state, `role="img"` on bar chart region
+- **Reduced motion** — `prefers-reduced-motion: reduce` disables all Framer Motion animations and CSS transitions globally
+- **Color contrast** — light mode text is near-black (`#080d0a`), muted text is `#5a5f58` (passes WCAG AA on `#f0f1ec` background)
+- **Keyboard** — all bar buttons and the theme toggle are keyboard-focusable and operable
 
 ---
 
-## Responsive Breakpoints
+## Dark Mode
 
-| Width | Behaviour |
-|---|---|
-| **1280px+** | Full desktop layout, max-width 1200px centered |
-| **768px** | Tighter padding, smaller card border-radius, compact card padding |
-| **480px** | Reduced display font size, smaller section labels, minimal inline padding |
-| **All widths** | `clamp()` on every font-size and padding for fluid scaling between breakpoints |
+Implemented via a `.dark` class toggled on `<html>` by `ThemeToggle`. User preference is persisted to `localStorage` and respects `prefers-color-scheme: dark` on first visit.
+
+All token values swap automatically — components don't need any conditional logic for dark/light. `color-mix()` handles derived colors in both modes.
 
 ---
 
-## Caching Strategy
+## Tradeoffs & Decisions
 
+| Decision | Tradeoff |
+|----------|----------|
+| JSONPlaceholder instead of a real cloud API | No public cost API exists without auth keys. Deterministic transform on user data gives realistic, stable numbers. |
+| Single page with two snap sections | The brief says "a polished single section beats a rough full page." I focused depth into one interactive dashboard rather than breadth across multiple pages. |
+| `useCountUp` custom hook instead of a library | 30 lines of `requestAnimationFrame` + cubic easing. Shows understanding of animation fundamentals without adding a dependency. |
+| Inter as the sole typeface | Variable font covers weights 100–900 in a single file. `tabular-nums` and OpenType features give it the precision needed for financial data. Eliminated the need for separate display and mono fonts. |
+| `layoutId` for the active bar indicator | Framer Motion handles the position interpolation automatically. Zero manual calculation for the sliding highlight. |
+| CSS Grid for card header instead of flexbox | `grid-template-columns: 1fr auto` keeps the KPI pinned right on all screen sizes. Flexbox `wrap` caused it to drop below badges on mobile. |
+| Mandatory scroll-snap | Creates a focused, app-like feel. The FeatureSection has internal `overflow-y: auto` so the chart + table can scroll within its snap panel. |
+
+---
+
+## What I'd Improve With More Time
+
+1. **Grouping toggle** — switch between "by Cluster" and "by Service" views with animated bar transitions using `AnimatePresence`
+2. **Time range filter** — Last 7 / 30 / 90 days with a real API that returns different data sets
+3. **Sparklines** — tiny inline trend charts inside each table row showing cost over time
+4. **Keyboard navigation** — arrow keys to move active cluster selection between bars
+5. **React Query DevTools** — visible in development for easy demo of cache behaviour during review
+6. **E2E tests** — Playwright tests for scroll-trigger firing, bar click filtering, and dark mode toggle
+
+---
+
+## Running Locally
+
+```bash
+npm install
+npm run dev          # → http://localhost:5173
 ```
-First visit:
-  Browser → GET /users → 200 OK → Transform → Render → Cache (5min stale, 10min GC)
 
-Revisit within 5 minutes:
-  Browser → Cache HIT → Instant render → Zero network requests
+## Production Build
 
-Revisit after 5 minutes (but within 10):
-  Browser → Cache (stale) → Instant render → Background refetch → Silent update
-
-Revisit after 10 minutes:
-  Browser → Cache MISS → Fresh fetch → Loading skeleton → Render
+```bash
+npm run build        # TypeScript check + Vite production build
+npm run preview      # Preview the build locally
 ```
-
-Open DevTools Network tab to verify: you'll see exactly **one** request on first load, then none on subsequent navigations.
-
----
-
-## Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start Vite dev server with HMR |
-| `npm run build` | TypeScript check + production build |
-| `npm run preview` | Preview the production build locally |
-
----
 
 ## Deploy
 
 ```bash
 npm run build
-# Push to GitHub → Import on vercel.com → Auto-deploys on push
+# Push to GitHub → Import on vercel.com → Auto-deploys on every push
 ```
-
-Or any static host — the build output is a standard `dist/` folder with `index.html` + hashed assets.
