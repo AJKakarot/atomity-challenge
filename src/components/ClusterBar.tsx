@@ -30,13 +30,28 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
 }) => {
   const heightPct = (total / maxTotal) * 100;
   const displayValue = useCountUp(total, 1000, inView);
+  const shouldAnimate = inView && !isReduced;
 
   return (
     <motion.button
+      className="cluster-bar-button"
       onClick={onClick}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: animDelay, ease: [0.23, 1, 0.32, 1] }}
+      initial={isReduced ? {} : { opacity: 0, y: 20 }}
+      animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+      transition={
+        isReduced
+          ? undefined
+          : {
+              duration: 0.5,
+              delay: animDelay,
+              ease: [0.23, 1, 0.32, 1],
+              type: 'spring',
+              stiffness: 300,
+              damping: 20,
+            }
+      }
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
       aria-pressed={isActive}
       aria-label={`${name}: $${total.toLocaleString()} total`}
       style={{
@@ -54,8 +69,15 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
     >
       {/* Cost label above bar */}
       <motion.span
-        animate={{ opacity: inView ? 1 : 0 }}
-        transition={{ delay: animDelay + 0.3 }}
+        initial={isReduced ? {} : { opacity: 0 }}
+        animate={
+          shouldAnimate
+            ? { opacity: 1 }
+            : { opacity: 1 }
+        }
+        transition={
+          isReduced ? undefined : { delay: animDelay + 0.3 }
+        }
         style={{
           fontFamily: tokens.font.mono,
           fontSize: 'clamp(0.65rem, 1.5vw, 0.78rem)',
@@ -82,12 +104,13 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
       >
         <motion.div
           initial={{ height: '0%' }}
-          animate={inView ? { height: `${heightPct}%` } : { height: '0%' }}
+          animate={shouldAnimate ? { height: `${heightPct}%` } : { height: '0%' }}
           transition={{
             duration: isReduced ? 0 : 0.9,
             delay: isReduced ? 0 : animDelay + 0.1,
             ease: [0.23, 1, 0.32, 1],
           }}
+          className="cluster-bar-fill"
           style={{
             width: '100%',
             background: isActive
@@ -95,7 +118,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
               : tokens.colors.barFill,
             borderRadius: tokens.radius.sm,
             opacity: isActive ? 1 : 0.55,
-            transition: 'opacity 0.25s ease, background 0.25s ease',
+            transition: 'opacity 0.2s ease, background 0.25s ease',
             boxShadow: isActive ? tokens.shadow.glow : 'none',
           }}
         />
