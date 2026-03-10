@@ -14,6 +14,7 @@ interface MetricRowProps {
   isActive: boolean;
   delay: number;
   inView: boolean;
+  onClick?: () => void;
 }
 
 const prefersReducedMotion = () =>
@@ -48,7 +49,7 @@ const Cell: React.FC<{ value: number; highlight: boolean; inView: boolean; delay
 };
 
 export const MetricRow: React.FC<MetricRowProps> = ({
-  cluster, total, isActive, delay, inView,
+  cluster, total, isActive, delay, inView, onClick,
 }) => {
   const totalDisplayed = useCountUp(total, 1000, inView);
   const [hovered, setHovered] = useState(false);
@@ -64,12 +65,17 @@ export const MetricRow: React.FC<MetricRowProps> = ({
       }
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-selected={onClick ? isActive : undefined}
       style={{
         background: hovered
           ? 'var(--color-bg-card-hover)'
           : (isActive ? 'var(--color-accent-green-dim)' : 'transparent'),
         transition: 'background 0.25s ease',
         borderRadius: tokens.radius.sm,
+        cursor: onClick ? 'pointer' : undefined,
       }}
     >
       <td

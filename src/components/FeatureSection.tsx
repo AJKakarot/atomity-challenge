@@ -4,7 +4,7 @@
 // Clicking a bar highlights the cluster across both views.
 
 import React, { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { tokens } from '../tokens';
 import { useClusterData, TOTAL, MAX_TOTAL } from '../hooks/useClusterData';
 import { ClusterBar } from './ClusterBar';
@@ -21,13 +21,25 @@ const prefersReduced = () =>
 export const FeatureSection: React.FC = () => {
   const { data: clusters, isLoading, isError } = useClusterData();
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [deselectGeneration, setDeselectGeneration] = useState(0);
 
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: '-80px' });
   const isReduced = prefersReduced();
 
   const handleBarClick = (id: string) => {
-    setActiveId(prev => (prev === id ? null : id));
+    if (activeId === id) {
+      setDeselectGeneration(g => g + 1);
+      setActiveId(null);
+    } else {
+      if (activeId !== null) setDeselectGeneration(g => g + 1);
+      setActiveId(id);
+    }
+  };
+
+  const handleClearSelection = () => {
+    setDeselectGeneration(g => g + 1);
+    setActiveId(null);
   };
 
   const totalSpend = clusters?.reduce((sum, c) => sum + TOTAL(c), 0) ?? 0;
@@ -98,19 +110,40 @@ export const FeatureSection: React.FC = () => {
                 fontFeatureSettings: "'cv02', 'cv03', 'cv04', 'cv11'",
               }}
             >
-              Click any cluster to break down its spend.
+              Click a bar or row to break down its spend.
             </p>
           </motion.div>
         </div>
 
         {/* ── Dashboard Card ── */}
         <motion.div
-          initial={isReduced ? {} : { opacity: 0, y: 40 }}
-          animate={inView && !isReduced ? { opacity: 1, y: 0 } : {}}
+          initial={
+            isReduced
+              ? {}
+              : {
+                  opacity: 0,
+                  y: 40,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.02), 0 2px 8px rgba(0,0,0,0.02)',
+                }
+          }
+          animate={
+            inView && !isReduced
+              ? {
+                  opacity: 1,
+                  y: 0,
+                  boxShadow: activeCluster ? tokens.shadow.glow : tokens.shadow.card,
+                }
+              : { opacity: 1, y: 0, boxShadow: tokens.shadow.card }
+          }
           transition={
             isReduced
               ? undefined
-              : { duration: 0.7, delay: 0.15, ease: [0.23, 1, 0.32, 1] }
+              : {
+                  duration: 0.7,
+                  delay: 0.15,
+                  ease: [0.23, 1, 0.32, 1],
+                  boxShadow: { duration: 0.5, ease: [0.23, 1, 0.32, 1] },
+                }
           }
           className="card"
           style={{ padding: 'clamp(0.75rem, 2vw, 1.25rem)', overflow: 'hidden' }}
@@ -198,32 +231,45 @@ export const FeatureSection: React.FC = () => {
 
           {clusters && (
             <>
-              {/* ── Active cluster info strip ── */}
-              {activeCluster && (
-                <motion.div
-                  initial={isReduced ? {} : { opacity: 0, height: 0 }}
-                  animate={
-                    inView && !isReduced
-                      ? { opacity: 1, height: 'auto' }
-                      : { opacity: 1, height: 'auto' }
-                  }
-                  exit={{ opacity: 0, height: 0 }}
-                  style={{
-                    background: tokens.colors.accentGreenDim,
-                    border: `1px solid ${tokens.colors.borderAccent}`,
-                    borderRadius: tokens.radius.md,
-                    padding: '12px 16px',
-                    marginBottom: '1.5rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: '6px',
-                    fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
-                  }}
-                  role="status"
-                  aria-live="polite"
-                >
+              {/* ── Active cluster info strip (reserved space, no layout shift) ── */}
+              <div
+                style={{
+                  minHeight: '88px',
+                  marginBottom: '1.5rem',
+                }}
+              >
+                <AnimatePresence mode="wait">
+                  {activeCluster && (
+                    <motion.div
+                      key={activeCluster.id}
+                      initial={isReduced ? {} : { opacity: 0, scaleX: 0, x: -16 }}
+                      animate={
+                        inView && !isReduced
+                          ? { opacity: 1, scaleX: 1, x: 0 }
+                          : { opacity: 1, scaleX: 1, x: 0 }
+                      }
+                      exit={isReduced ? {} : { opacity: 0, scaleX: 0, x: -16 }}
+                      transition={{
+                        duration: 1.25,
+                        ease: [0.23, 1, 0.32, 1],
+                      }}
+                      style={{
+                        transformOrigin: 'left center',
+                        background: `color-mix(in srgb, ${tokens.colors.bgCard} 90%, ${tokens.colors.accentGreenDim})`,
+                        border: `1px solid ${tokens.colors.borderAccent}`,
+                        borderRadius: tokens.radius.md,
+                        padding: '12px 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '6px',
+                        fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
+                        boxShadow: tokens.shadow.glow,
+                      }}
+                    role="status"
+                    aria-live="polite"
+                  >
                   <span
                     style={{
                       fontFamily: tokens.font.body,
@@ -243,7 +289,7 @@ export const FeatureSection: React.FC = () => {
                     </Badge>
                   </div>
                   <button
-                    onClick={() => setActiveId(null)}
+                    onClick={handleClearSelection}
                     aria-label="Clear selection"
                     style={{
                       background: 'none',
@@ -257,7 +303,9 @@ export const FeatureSection: React.FC = () => {
                     ✕ Clear
                   </button>
                 </motion.div>
-              )}
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* ── Bar Chart ── */}
               <div
@@ -279,6 +327,7 @@ export const FeatureSection: React.FC = () => {
                     style={{ flex: 1 }}
                   >
                     <ClusterBar
+                      id={cluster.id}
                       name={cluster.name}
                       total={TOTAL(cluster)}
                       maxTotal={MAX_TOTAL}
@@ -287,6 +336,7 @@ export const FeatureSection: React.FC = () => {
                       onClick={() => handleBarClick(cluster.id)}
                       animDelay={i * 0.1}
                       inView={inView}
+                      deselectGeneration={deselectGeneration}
                     />
                   </div>
                 ))}
@@ -347,6 +397,7 @@ export const FeatureSection: React.FC = () => {
                         isActive={activeId === cluster.id}
                         delay={0.5 + i * 0.09}
                         inView={inView}
+                        onClick={() => handleBarClick(cluster.id)}
                       />
                     ))}
                   </tbody>
@@ -369,7 +420,7 @@ export const FeatureSection: React.FC = () => {
             letterSpacing: '0.04em',
           }}
         >
-          API data · Cached 5 min · Click cluster to filter
+          API data · Cached 5 min · Click bar or row to filter
         </motion.p>
       </div>
     </section>
