@@ -2,7 +2,7 @@
 // One row in the cost breakdown table.
 // Stagger-animates in from the left on scroll.
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { tokens } from '../tokens';
 import { ClusterMetric } from '../hooks/useClusterData';
@@ -15,6 +15,10 @@ interface MetricRowProps {
   delay: number;
   inView: boolean;
 }
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const Cell: React.FC<{ value: number; highlight: boolean; inView: boolean; delay: number }> = ({
   value, highlight, inView, delay,
@@ -45,14 +49,23 @@ export const MetricRow: React.FC<MetricRowProps> = ({
   cluster, total, isActive, delay, inView,
 }) => {
   const totalDisplayed = useCountUp(total, 1000, inView);
+  const [hovered, setHovered] = useState(false);
+  const isReduced = prefersReducedMotion();
+  const shouldAnimate = inView && !isReduced;
 
   return (
     <motion.tr
-      initial={{ opacity: 0, x: -16 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.45, delay, ease: [0.23, 1, 0.32, 1] }}
+      initial={isReduced ? {} : { opacity: 0, x: -16 }}
+      animate={shouldAnimate ? { opacity: 1, x: 0 } : {}}
+      transition={
+        isReduced ? undefined : { duration: 0.45, delay, ease: [0.23, 1, 0.32, 1] }
+      }
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        background: isActive ? tokens.colors.accentGreenDim : 'transparent',
+        background: hovered
+          ? 'var(--color-bg-card-hover)'
+          : (isActive ? 'var(--color-accent-green-dim)' : 'transparent'),
         transition: 'background 0.25s ease',
         borderRadius: tokens.radius.sm,
       }}
@@ -106,3 +119,4 @@ export const MetricRow: React.FC<MetricRowProps> = ({
     </motion.tr>
   );
 };
+
