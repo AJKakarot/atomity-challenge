@@ -24,6 +24,32 @@ Scroll-triggered via Framer Motion `useInView` (`once: true`). Sequence: heading
 
 ---
 
+## Architecture
+
+```mermaid
+graph TD
+  App["App.tsx"]
+  App --> Hero["HeroSection"]
+  App --> Feature["FeatureSection"]
+  Feature --> ClusterBar["ClusterBar ×4"]
+  Feature --> MetricRow["MetricRow ×4"]
+  Feature --> Badge["Badge"]
+  Feature --> Skeleton["LoadingSkeleton"]
+  ClusterBar --> useCountUp["useCountUp"]
+  MetricRow --> useCountUp
+  Feature --> useClusterData["useClusterData"]
+  App --> ThemeToggle["ThemeToggle"]
+
+  style App fill:#1a2030,color:#e8edf2,stroke:#3ddc84
+  style Feature fill:#1a2030,color:#e8edf2,stroke:#3ddc84
+  style useClusterData fill:#0d1117,color:#3ddc84,stroke:#2a3245
+  style useCountUp fill:#0d1117,color:#3ddc84,stroke:#2a3245
+```
+
+All UI built from scratch — no MUI, Chakra, shadcn.
+
+---
+
 ## Data Flow
 
 ```mermaid
@@ -45,27 +71,6 @@ sequenceDiagram
 ```
 
 JSONPlaceholder `/users` → deterministic transform → `ClusterMetric`. States: Loading (skeleton), Error (alert), Success (dashboard).
-
----
-
-## Architecture
-
-```mermaid
-graph TD
-  App["App.tsx"]
-  App --> Hero["HeroSection"]
-  App --> Feature["FeatureSection"]
-  Feature --> ClusterBar["ClusterBar ×4"]
-  Feature --> MetricRow["MetricRow ×4"]
-  Feature --> Badge["Badge"]
-  Feature --> Skeleton["LoadingSkeleton"]
-  ClusterBar --> useCountUp["useCountUp"]
-  MetricRow --> useCountUp
-  Feature --> useClusterData["useClusterData"]
-  App --> ThemeToggle["ThemeToggle"]
-```
-
-All UI built from scratch — no MUI, Chakra, shadcn.
 
 ---
 
