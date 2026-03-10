@@ -145,34 +145,9 @@ graph TD
   Feature --> useClusterData["useClusterData<br/><small>TanStack Query + transform</small>"]
 
   App --> ThemeToggle["ThemeToggle<br/><small>dark/light</small>"]
-
-  style App fill:#1a2030,color:#e8edf2,stroke:#3ddc84
-  style Feature fill:#1a2030,color:#e8edf2,stroke:#3ddc84
-  style useClusterData fill:#0d1117,color:#3ddc84,stroke:#3ddc84
-  style useCountUp fill:#0d1117,color:#3ddc84,stroke:#3ddc84
 ```
 
-```
-src/
-  tokens/
-    index.ts                   ← design tokens (colors, fonts, radii, shadows)
-  hooks/
-    useClusterData.ts          ← TanStack Query + API transform + cache config
-    useCountUp.ts              ← RAF number animation with cubic ease-out
-  components/
-    HeroSection.tsx            ← above-the-fold hero with scroll CTA
-    FeatureSection.tsx         ← main dashboard: header, bars, table, KPI
-    ClusterBar.tsx             ← single animated vertical bar + hover spring
-    MetricRow.tsx              ← table row with count-up cells + hover highlight
-    Badge.tsx                  ← pill label component (5 variants)
-    ThemeToggle.tsx            ← dark/light toggle (persisted to localStorage)
-    LoadingSkeleton.tsx        ← pulsing placeholder during fetch
-  App.tsx                      ← QueryClientProvider + Nav + layout
-  main.tsx                     ← React 18 createRoot
-  index.css                    ← CSS tokens, scroll-snap, responsive breakpoints
-```
-
-Every UI element is **built from scratch** — no MUI, Chakra, shadcn, or any pre-built component library. The Badge, bars, table rows, skeleton, and theme toggle are all custom.
+Every UI element is **built from scratch** — no MUI, Chakra, shadcn, or any pre-built component library.
 
 ---
 
