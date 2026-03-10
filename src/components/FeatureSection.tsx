@@ -38,18 +38,21 @@ export const FeatureSection: React.FC = () => {
       ref={sectionRef}
       aria-label="Cloud cluster cost intelligence"
       style={{
-        minHeight: 'auto',
+        height: '100vh',
+        minHeight: '100vh',
+        scrollSnapAlign: 'start',
+        scrollSnapStop: 'always',
+        overflowY: 'auto',
         display: 'flex',
         alignItems: 'center',
         background: tokens.colors.bgPrimary,
         transition: 'background 0.3s ease',
-        paddingBlockStart: 'clamp(1rem, 3vh, 2rem)',
       }}
     >
-      <div className="section-wrapper" style={{ width: '100%' }}>
+      <div className="section-wrapper" style={{ width: '100%', paddingBlockStart: 'clamp(3.5rem, 8vh, 5rem)', paddingBlockEnd: 'clamp(1rem, 3vh, 2rem)', paddingInline: 'clamp(1rem, 4vw, 3rem)' }}>
 
         {/* ── Header ── */}
-        <div style={{ marginBottom: 'clamp(2rem, 5vh, 3.5rem)' }}>
+        <div style={{ marginBottom: 'clamp(0.5rem, 1.5vh, 1rem)' }}>
           <p
             className="text-section-label"
             style={{
@@ -60,7 +63,7 @@ export const FeatureSection: React.FC = () => {
               textTransform: 'uppercase',
             }}
           >
-            ◆ Cost Intelligence
+            ◆ Costs
           </p>
           <motion.div
             initial={isReduced ? {} : { opacity: 0, y: 32 }}
@@ -73,26 +76,29 @@ export const FeatureSection: React.FC = () => {
               className="text-display"
               style={{
                 fontFamily: tokens.font.display,
+                fontSize: 'clamp(1.3rem, 2.8vw, 2rem)',
+                fontWeight: 800,
+                lineHeight: 1.1,
+                letterSpacing: '-0.03em',
                 color: tokens.colors.textPrimary,
-                marginBottom: '16px',
+                marginBottom: '6px',
               }}
             >
-              Cluster spend,{' '}
-              <span style={{ color: tokens.colors.accentGreen }}>demystified.</span>
+              Where does the{' '}
+              <span style={{ color: tokens.colors.accentGreen }}>money go?</span>
             </h2>
             <p
               style={{
                 fontFamily: tokens.font.body,
-                fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
+                fontSize: 'clamp(0.78rem, 1.3vw, 0.88rem)',
                 color: tokens.colors.textSecondary,
-                maxWidth: '520px',
-                lineHeight: 1.65,
+                maxWidth: '420px',
+                lineHeight: 1.5,
                 fontWeight: 300,
                 fontFeatureSettings: "'cv02', 'cv03', 'cv04', 'cv11'",
               }}
             >
-              Drill into every dollar across CPU, RAM, storage, and GPU.
-              Click any cluster to isolate its cost breakdown.
+              Click any cluster to break down its spend.
             </p>
           </motion.div>
         </div>
@@ -107,7 +113,7 @@ export const FeatureSection: React.FC = () => {
               : { duration: 0.7, delay: 0.15, ease: [0.23, 1, 0.32, 1] }
           }
           className="card"
-          style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)', overflow: 'hidden' }}
+          style={{ padding: 'clamp(0.75rem, 2vw, 1.25rem)', overflow: 'hidden' }}
         >
 
           {/* ── Card header ── */}
@@ -118,7 +124,7 @@ export const FeatureSection: React.FC = () => {
               justifyContent: 'space-between',
               flexWrap: 'wrap',
               gap: '12px',
-              marginBottom: '2rem',
+              marginBottom: '0.75rem',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
@@ -159,7 +165,7 @@ export const FeatureSection: React.FC = () => {
                 <p
                   style={{
                     fontFamily: tokens.font.inter,
-                    fontSize: 'clamp(1.4rem, 3vw, 1.9rem)',
+                    fontSize: 'clamp(1.1rem, 2.5vw, 1.6rem)',
                     fontWeight: 600,
                     color: tokens.colors.textPrimary,
                     letterSpacing: '-0.02em',
@@ -258,8 +264,8 @@ export const FeatureSection: React.FC = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'flex-end',
-                  gap: 'clamp(8px, 2vw, 20px)',
-                  marginBottom: '2.5rem',
+                  gap: 'clamp(4px, 1.5vw, 16px)',
+                  marginBottom: '0.75rem',
                   paddingInline: '8px',
                 }}
                 role="img"
@@ -297,7 +303,7 @@ export const FeatureSection: React.FC = () => {
                 style={{
                   border: 'none',
                   borderTop: `1px solid ${tokens.colors.borderSubtle}`,
-                  marginBottom: '1.5rem',
+                  marginBottom: '0.5rem',
                   transformOrigin: 'left',
                 }}
               />
@@ -315,7 +321,7 @@ export const FeatureSection: React.FC = () => {
                           key={col}
                           scope="col"
                           style={{
-                            padding: '8px 16px',
+                            padding: '5px 12px',
                             fontFamily: tokens.font.mono,
                             fontSize: '0.68rem',
                             fontWeight: 500,
@@ -355,9 +361,9 @@ export const FeatureSection: React.FC = () => {
           animate={inView && !isReduced ? { opacity: 1 } : { opacity: 1 }}
           transition={isReduced ? undefined : { delay: 1.2 }}
           style={{
-            marginTop: '1.25rem',
+            marginTop: '0.4rem',
             fontFamily: tokens.font.mono,
-            fontSize: '0.68rem',
+            fontSize: 'clamp(0.55rem, 1vw, 0.65rem)',
             color: tokens.colors.textMuted,
             letterSpacing: '0.04em',
           }}
