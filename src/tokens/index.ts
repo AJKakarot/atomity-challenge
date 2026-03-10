@@ -22,9 +22,9 @@ export const tokens = {
     barTrack:       'var(--color-bar-track)',
   },
   font: {
-    display: "'Syne', sans-serif",
+    display: "'Inter', sans-serif",
     body:    "'Inter', sans-serif",
-    mono:    "'DM Mono', monospace",
+    mono:    "'Inter', sans-serif",
     inter:   "'Inter', sans-serif",
   },
   radius: {
