@@ -119,15 +119,14 @@ export const FeatureSection: React.FC = () => {
           {/* ── Card header ── */}
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '12px',
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
+              alignItems: 'start',
+              gap: '8px',
               marginBottom: '0.75rem',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap', minWidth: 0 }}>
               <Badge variant="mono">Last 30 Days</Badge>
               <Badge variant="default">Aggregated by: Cluster</Badge>
               {!isLoading && !isError && (
@@ -147,12 +146,12 @@ export const FeatureSection: React.FC = () => {
                 initial={isReduced ? {} : { opacity: 0 }}
                 animate={inView && !isReduced ? { opacity: 1 } : {}}
                 transition={isReduced ? undefined : { delay: 1 }}
-                style={{ textAlign: 'right' }}
+                style={{ textAlign: 'right', whiteSpace: 'nowrap', flexShrink: 0 }}
               >
                 <p
                   style={{
                     fontFamily: tokens.font.inter,
-                    fontSize: '0.68rem',
+                    fontSize: 'clamp(0.55rem, 1.2vw, 0.68rem)',
                     color: tokens.colors.textMuted,
                     marginBottom: '2px',
                     letterSpacing: '0.08em',
@@ -165,7 +164,7 @@ export const FeatureSection: React.FC = () => {
                 <p
                   style={{
                     fontFamily: tokens.font.inter,
-                    fontSize: 'clamp(1.1rem, 2.5vw, 1.6rem)',
+                    fontSize: 'clamp(1rem, 2.5vw, 1.6rem)',
                     fontWeight: 600,
                     color: tokens.colors.textPrimary,
                     letterSpacing: '-0.02em',
@@ -219,7 +218,8 @@ export const FeatureSection: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     flexWrap: 'wrap',
-                    gap: '8px',
+                    gap: '6px',
+                    fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
                   }}
                   role="status"
                   aria-live="polite"
@@ -264,9 +264,10 @@ export const FeatureSection: React.FC = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'flex-end',
-                  gap: 'clamp(4px, 1.5vw, 16px)',
+                  gap: 'clamp(3px, 1vw, 12px)',
                   marginBottom: '0.75rem',
-                  paddingInline: '8px',
+                  paddingInline: '4px',
+                  overflowX: 'hidden',
                 }}
                 role="img"
                 aria-label="Cluster cost bar chart"
@@ -309,9 +310,9 @@ export const FeatureSection: React.FC = () => {
               />
 
               {/* ── Cost Breakdown Table ── */}
-              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginInline: '-0.5rem', paddingInline: '0.5rem' }}>
                 <table
-                  style={{ width: '100%', borderCollapse: 'collapse', minWidth: '580px' }}
+                  style={{ width: '100%', borderCollapse: 'collapse', minWidth: '520px' }}
                   aria-label="Cost breakdown by cluster"
                 >
                   <thead>
@@ -368,7 +369,7 @@ export const FeatureSection: React.FC = () => {
             letterSpacing: '0.04em',
           }}
         >
-          Data fetched from JSONPlaceholder API · Cached 5 min via TanStack Query · Click a cluster to filter
+          API data · Cached 5 min · Click cluster to filter
         </motion.p>
       </div>
     </section>

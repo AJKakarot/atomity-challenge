@@ -24,7 +24,7 @@ const Nav: React.FC = () => (
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '14px clamp(1rem, 5vw, 4rem)',
+      padding: '12px clamp(0.75rem, 4vw, 4rem)',
       background: `color-mix(in srgb, var(--color-bg-primary) 92%, transparent)`,
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
