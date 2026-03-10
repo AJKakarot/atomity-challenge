@@ -146,6 +146,7 @@ body {
 .cluster-card-container {
   container-type: inline-size;
   container-name: cluster-card;
+  overflow: visible;
 }
 
 @container cluster-card (max-width: 200px) {
@@ -172,6 +173,20 @@ body {
 
 .cluster-bar-button:hover .cluster-bar-fill {
   opacity: 1;
+}
+
+.cluster-bar-button {
+  border-radius: 10px;
+}
+
+.cluster-bar-button:hover {
+  box-shadow: 0 4px 24px rgba(61, 220, 132, 0.25), 0 8px 32px rgba(61, 220, 132, 0.15);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Prevent bar shift on hover — fixed layout */
+.bar-chart-container {
+  contain: layout;
 }
 
 /* ─── Reduced Motion ───────────────────────────────────────────── */

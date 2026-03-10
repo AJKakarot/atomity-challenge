@@ -74,7 +74,7 @@ export const MetricRow: React.FC<MetricRowProps> = ({
           ? 'var(--color-bg-card-hover)'
           : (isActive ? 'var(--color-accent-green-dim)' : 'transparent'),
         transition: 'background 0.25s ease',
-        borderRadius: tokens.radius.sm,
+        borderRadius: '8px',
         cursor: onClick ? 'pointer' : undefined,
       }}
     >
@@ -87,6 +87,8 @@ export const MetricRow: React.FC<MetricRowProps> = ({
           color: isActive ? tokens.colors.accentGreen : tokens.colors.textPrimary,
           whiteSpace: 'nowrap',
           transition: 'color 0.25s ease',
+          borderTopLeftRadius: '8px',
+          borderBottomLeftRadius: '8px',
         }}
       >
         {cluster.name}
@@ -124,6 +126,8 @@ export const MetricRow: React.FC<MetricRowProps> = ({
           transition: 'color 0.25s ease',
           fontVariantNumeric: 'tabular-nums',
           fontFeatureSettings: "'tnum'",
+          borderTopRightRadius: '8px',
+          borderBottomRightRadius: '8px',
         }}
       >
         ${totalDisplayed.toLocaleString()}

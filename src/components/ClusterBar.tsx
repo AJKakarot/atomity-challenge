@@ -54,8 +54,6 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
               damping: 20,
             }
       }
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
       aria-pressed={isActive}
       aria-label={`${name}: $${total.toLocaleString()} total`}
       style={{
@@ -101,7 +99,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
           display: 'flex',
           alignItems: 'flex-end',
           background: tokens.colors.barTrack,
-          borderRadius: tokens.radius.sm,
+          borderRadius: '8px',
           overflow: 'hidden',
           position: 'relative',
         }}
@@ -121,7 +119,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
             background: isActive
               ? `linear-gradient(to top, ${tokens.colors.accentGreen} 0%, color-mix(in srgb, ${tokens.colors.accentGreen} 85%, white) 60%, color-mix(in srgb, ${tokens.colors.accentGreen} 95%, white) 100%)`
               : tokens.colors.barFill,
-            borderRadius: tokens.radius.sm,
+            borderRadius: '8px',
             opacity: isActive ? 1 : 0.85,
             transition: 'opacity 0.2s ease, background 0.25s ease, box-shadow 0.3s ease',
             boxShadow: isActive

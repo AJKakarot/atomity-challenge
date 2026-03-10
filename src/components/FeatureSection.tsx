@@ -61,7 +61,7 @@ export const FeatureSection: React.FC = () => {
         transition: 'background 0.3s ease',
       }}
     >
-      <div className="section-wrapper" style={{ width: '100%', paddingBlockStart: 'clamp(3.5rem, 8vh, 5rem)', paddingBlockEnd: 'clamp(1rem, 3vh, 2rem)', paddingInline: 'clamp(1rem, 4vw, 3rem)' }}>
+      <div className="section-wrapper" style={{ width: '100%', paddingBlockStart: 'clamp(4.5rem, 10vh, 6rem)', paddingBlockEnd: 'clamp(1rem, 3vh, 2rem)', paddingInline: 'clamp(1rem, 4vw, 3rem)' }}>
 
         {/* ── Header ── */}
         <div style={{ marginBottom: 'clamp(0.5rem, 1.5vh, 1rem)' }}>
@@ -123,7 +123,7 @@ export const FeatureSection: React.FC = () => {
               : {
                   opacity: 0,
                   y: 40,
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.02), 0 2px 8px rgba(0,0,0,0.02)',
+                  boxShadow: '0 0 0 rgba(0,0,0,0), 0 0 0 rgba(61,220,132,0)',
                 }
           }
           animate={
@@ -131,7 +131,9 @@ export const FeatureSection: React.FC = () => {
               ? {
                   opacity: 1,
                   y: 0,
-                  boxShadow: activeCluster ? tokens.shadow.glow : tokens.shadow.card,
+                  boxShadow: activeCluster
+                    ? tokens.shadow.glow
+                    : '0 4px 20px rgba(0,0,0,0.08), 0 12px 40px rgba(61,220,132,0.12)',
                 }
               : { opacity: 1, y: 0, boxShadow: tokens.shadow.card }
           }
@@ -142,7 +144,7 @@ export const FeatureSection: React.FC = () => {
                   duration: 0.7,
                   delay: 0.15,
                   ease: [0.23, 1, 0.32, 1],
-                  boxShadow: { duration: 0.5, ease: [0.23, 1, 0.32, 1] },
+                  boxShadow: { duration: 0.6, delay: 0.15, ease: [0.23, 1, 0.32, 1] },
                 }
           }
           className="card"
@@ -309,13 +311,13 @@ export const FeatureSection: React.FC = () => {
 
               {/* ── Bar Chart ── */}
               <div
+                className="bar-chart-container"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-end',
-                  gap: 'clamp(3px, 1vw, 12px)',
+                  gap: '12px',
                   marginBottom: '0.75rem',
                   paddingInline: '4px',
-                  overflowX: 'hidden',
                 }}
                 role="img"
                 aria-label="Cluster cost bar chart"
@@ -324,7 +326,7 @@ export const FeatureSection: React.FC = () => {
                   <div
                     key={cluster.id}
                     className="cluster-card-container"
-                    style={{ flex: 1 }}
+                    style={{ flex: '1 1 0', minWidth: 0 }}
                   >
                     <ClusterBar
                       id={cluster.id}
@@ -362,7 +364,7 @@ export const FeatureSection: React.FC = () => {
               {/* ── Cost Breakdown Table ── */}
               <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginInline: '-0.5rem', paddingInline: '0.5rem' }}>
                 <table
-                  style={{ width: '100%', borderCollapse: 'collapse', minWidth: '520px' }}
+                  style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 4px', minWidth: '520px' }}
                   aria-label="Cost breakdown by cluster"
                 >
                   <thead>
