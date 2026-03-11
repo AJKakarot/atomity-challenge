@@ -29,7 +29,7 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
   deselectGeneration,
 }) => {
   const heightPct = (total / maxTotal) * 100;
-  const displayValue = useCountUp(total, 1000, inView);
+  const displayValue = useCountUp(total, 1800, inView);
   const shouldAnimate = inView && !isReduced;
 
   return (

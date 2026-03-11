@@ -128,6 +128,85 @@ body {
   transition: box-shadow 0.2s ease;
 }
 
+.btn-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+}
+
+.feature-section {
+  height: 100vh;
+  min-height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-primary);
+  transition: background 0.3s ease;
+}
+
+.card-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.card-badges {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.card-kpi {
+  text-align: right;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.kpi-label {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.55rem, 1.2vw, 0.68rem);
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.kpi-value {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum', 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+.error-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-accent-error);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+}
+
+.footer-note {
+  margin-top: 0.4rem;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.55rem, 1vw, 0.65rem);
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
 /* Prevents bar layout shift on hover */
 .bar-chart-container {
   contain: layout;

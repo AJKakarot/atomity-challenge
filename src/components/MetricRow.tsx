@@ -17,7 +17,7 @@ interface MetricRowProps {
 const Cell: React.FC<{ value: number; highlight: boolean; inView: boolean; delay: number }> = ({
   value, highlight, inView, delay,
 }) => {
-  const displayed = useCountUp(value, 900, inView);
+  const displayed = useCountUp(value, 1600, inView);
   return (
     <td
       style={{
@@ -44,7 +44,7 @@ const Cell: React.FC<{ value: number; highlight: boolean; inView: boolean; delay
 export const MetricRow: React.FC<MetricRowProps> = ({
   cluster, total, isActive, delay, inView, onClick,
 }) => {
-  const totalDisplayed = useCountUp(total, 1000, inView);
+  const totalDisplayed = useCountUp(total, 2000, inView);
   const [hovered, setHovered] = useState(false);
   const isReduced = prefersReducedMotion();
   const shouldAnimate = inView && !isReduced;

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { prefersReducedMotion } from './usePrefersReducedMotion';
 
-export const useCountUp = (target: number, duration = 1200, trigger = true) => {
+export const useCountUp = (target: number, duration = 1800, trigger = true) => {
   const [value, setValue] = useState(0);
   const rafRef = useRef<number>(0);
 
@@ -14,7 +14,9 @@ export const useCountUp = (target: number, duration = 1200, trigger = true) => {
     const step = (timestamp: number) => {
       if (!start) start = timestamp;
       const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const eased = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
       setValue(Math.round(target * eased));
       if (progress < 1) rafRef.current = requestAnimationFrame(step);
     };
