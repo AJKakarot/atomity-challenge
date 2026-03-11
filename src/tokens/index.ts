@@ -1,7 +1,4 @@
-// tokens/index.ts
-// Single source of truth for all design values.
-// Components reference these — never raw hex values.
-
+/** Single source of truth for design values. Components reference these — never raw hex. */
 export const tokens = {
   colors: {
     bgPrimary:      'var(--color-bg-primary)',
@@ -30,8 +27,6 @@ export const tokens = {
   radius: {
     sm:   '6px',
     md:   '12px',
-    lg:   '20px',
-    xl:   '28px',
     full: '9999px',
   },
   shadow: {

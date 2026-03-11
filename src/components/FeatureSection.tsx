@@ -1,22 +1,14 @@
-// components/FeatureSection.tsx
-// The main scroll-triggered section.
-// Clusters: animated bar chart + detailed breakdown table.
-// Clicking a bar highlights the cluster across both views.
-
 import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { tokens } from '../tokens';
 import { useClusterData, TOTAL, MAX_TOTAL } from '../hooks/useClusterData';
+import { prefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { ClusterBar } from './ClusterBar';
 import { MetricRow } from './MetricRow';
 import { Badge } from './Badge';
 import { LoadingSkeleton } from './LoadingSkeleton';
 
 const COLUMNS = ['Cluster', 'CPU', 'RAM', 'Storage', 'Network', 'GPU', 'Efficiency', 'Total'];
-
-const prefersReduced = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const FeatureSection: React.FC = () => {
   const { data: clusters, isLoading, isError } = useClusterData();
@@ -25,7 +17,7 @@ export const FeatureSection: React.FC = () => {
 
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: '-80px' });
-  const isReduced = prefersReduced();
+  const isReduced = prefersReducedMotion();
 
   const handleBarClick = (id: string) => {
     if (activeId === id) {
@@ -63,7 +55,6 @@ export const FeatureSection: React.FC = () => {
     >
       <div className="section-wrapper" style={{ width: '100%', paddingBlockStart: 'clamp(4.5rem, 10vh, 6rem)', paddingBlockEnd: 'clamp(1rem, 3vh, 2rem)', paddingInline: 'clamp(1rem, 4vw, 3rem)' }}>
 
-        {/* ── Header ── */}
         <div style={{ marginBottom: 'clamp(0.5rem, 1.5vh, 1rem)' }}>
           <p
             className="text-section-label"
@@ -115,7 +106,6 @@ export const FeatureSection: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* ── Dashboard Card ── */}
         <motion.div
           initial={
             isReduced
@@ -151,7 +141,6 @@ export const FeatureSection: React.FC = () => {
           style={{ padding: 'clamp(0.75rem, 2vw, 1.25rem)', overflow: 'hidden' }}
         >
 
-          {/* ── Card header ── */}
           <div
             style={{
               display: 'grid',
@@ -175,7 +164,6 @@ export const FeatureSection: React.FC = () => {
               )}
             </div>
 
-            {/* Total spend KPI */}
             {!isLoading && !isError && (
               <motion.div
                 initial={isReduced ? {} : { opacity: 0 }}
@@ -213,7 +201,6 @@ export const FeatureSection: React.FC = () => {
             )}
           </div>
 
-          {/* ── Loading / Error / Data ── */}
           {isLoading && <LoadingSkeleton />}
 
           {isError && (
@@ -233,7 +220,6 @@ export const FeatureSection: React.FC = () => {
 
           {clusters && (
             <>
-              {/* ── Active cluster info strip (reserved space, no layout shift) ── */}
               <div
                 style={{
                   minHeight: '88px',
@@ -245,11 +231,7 @@ export const FeatureSection: React.FC = () => {
                     <motion.div
                       key={activeCluster.id}
                       initial={isReduced ? {} : { opacity: 0, scaleX: 0, x: -16 }}
-                      animate={
-                        inView && !isReduced
-                          ? { opacity: 1, scaleX: 1, x: 0 }
-                          : { opacity: 1, scaleX: 1, x: 0 }
-                      }
+                      animate={{ opacity: 1, scaleX: 1, x: 0 }}
                       exit={isReduced ? {} : { opacity: 0, scaleX: 0, x: -16 }}
                       transition={{
                         duration: 1.25,
@@ -309,7 +291,6 @@ export const FeatureSection: React.FC = () => {
                 </AnimatePresence>
               </div>
 
-              {/* ── Bar Chart ── */}
               <div
                 className="bar-chart-container"
                 style={{
@@ -344,12 +325,9 @@ export const FeatureSection: React.FC = () => {
                 ))}
               </div>
 
-              {/* ── Divider ── */}
               <motion.hr
                 initial={isReduced ? {} : { scaleX: 0 }}
-                animate={
-                  inView && !isReduced ? { scaleX: 1 } : { scaleX: 1 }
-                }
+                animate={{ scaleX: 1 }}
                 transition={
                   isReduced ? undefined : { duration: 0.6, delay: 0.7 }
                 }
@@ -361,7 +339,6 @@ export const FeatureSection: React.FC = () => {
                 }}
               />
 
-              {/* ── Cost Breakdown Table ── */}
               <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginInline: '-0.5rem', paddingInline: '0.5rem' }}>
                 <table
                   style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 4px', minWidth: '520px' }}
@@ -409,10 +386,9 @@ export const FeatureSection: React.FC = () => {
           )}
         </motion.div>
 
-        {/* ── Footer note ── */}
         <motion.p
           initial={isReduced ? {} : { opacity: 0 }}
-          animate={inView && !isReduced ? { opacity: 1 } : { opacity: 1 }}
+          animate={{ opacity: 1 }}
           transition={isReduced ? undefined : { delay: 1.2 }}
           style={{
             marginTop: '0.4rem',

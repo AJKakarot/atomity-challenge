@@ -1,7 +1,3 @@
-// components/ClusterBar.tsx
-// A single animated vertical bar in the cluster chart.
-// Height animates from 0 on scroll-trigger via Framer Motion.
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { tokens } from '../tokens';
@@ -69,14 +65,9 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
         outline: 'none',
       }}
     >
-      {/* Cost label above bar */}
       <motion.span
         initial={isReduced ? {} : { opacity: 0 }}
-        animate={
-          shouldAnimate
-            ? { opacity: 1 }
-            : { opacity: 1 }
-        }
+        animate={{ opacity: 1 }}
         transition={
           isReduced ? undefined : { delay: animDelay + 0.3 }
         }
@@ -91,7 +82,6 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
         ${displayValue.toLocaleString()}
       </motion.span>
 
-      {/* Bar track */}
       <div
         style={{
           width: '100%',
@@ -128,7 +118,6 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
             position: 'relative',
           }}
         />
-        {/* Active indicator — subtle glow at fill top */}
         {isActive && (
           <motion.div
             layoutId="bar-indicator"
@@ -145,7 +134,6 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
         )}
       </div>
 
-      {/* Cluster name — visually tied to bar */}
       <span
         style={{
           display: 'block',
@@ -159,8 +147,8 @@ export const ClusterBar: React.FC<ClusterBarProps> = ({
           transition: 'all 0.25s ease',
           letterSpacing: '-0.01em',
           background: isActive
-            ? 'var(--color-accent-green-dim)'
-            : 'color-mix(in srgb, var(--color-bar-track) 35%, transparent)',
+            ? tokens.colors.accentGreenDim
+            : `color-mix(in srgb, ${tokens.colors.barTrack} 35%, transparent)`,
           borderRadius: '6px',
         }}
       >

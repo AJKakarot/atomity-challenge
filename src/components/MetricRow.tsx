@@ -1,11 +1,8 @@
-// components/MetricRow.tsx
-// One row in the cost breakdown table.
-// Stagger-animates in from the left on scroll.
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { tokens } from '../tokens';
 import { ClusterMetric } from '../hooks/useClusterData';
+import { prefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { useCountUp } from '../hooks/useCountUp';
 
 interface MetricRowProps {
@@ -16,10 +13,6 @@ interface MetricRowProps {
   inView: boolean;
   onClick?: () => void;
 }
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const Cell: React.FC<{ value: number; highlight: boolean; inView: boolean; delay: number }> = ({
   value, highlight, inView, delay,
@@ -71,8 +64,8 @@ export const MetricRow: React.FC<MetricRowProps> = ({
       aria-selected={onClick ? isActive : undefined}
       style={{
         background: hovered
-          ? 'var(--color-bg-card-hover)'
-          : (isActive ? 'var(--color-accent-green-dim)' : 'transparent'),
+          ? tokens.colors.bgCardHover
+          : (isActive ? tokens.colors.accentGreenDim : 'transparent'),
         transition: 'background 0.25s ease',
         borderRadius: '8px',
         cursor: onClick ? 'pointer' : undefined,

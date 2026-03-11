@@ -1,8 +1,4 @@
-// hooks/useClusterData.ts
-// Fetches cluster cost data from a public API.
-// TanStack Query handles: loading state, error state, caching (staleTime),
-// and background refetching — no redundant network requests on revisit.
-
+/** TanStack Query: loading, error, caching (staleTime 5min), background refetch. */
 import { useQuery } from '@tanstack/react-query';
 
 export interface ClusterMetric {
@@ -16,17 +12,13 @@ export interface ClusterMetric {
   efficiency: number; // 0–100
 }
 
-// We fetch from JSONPlaceholder and transform the response
-// into cloud cost data. This satisfies the "real API call" requirement
-// while giving us meaningful, structured data to display.
+/** JSONPlaceholder → transform to cluster cost metrics (no public cloud API). */
 const fetchClusterData = async (): Promise<ClusterMetric[]> => {
   const response = await fetch('https://jsonplaceholder.typicode.com/users');
   if (!response.ok) throw new Error('Failed to fetch cluster data');
 
   const users = await response.json();
 
-  // Transform user data into cluster cost metrics
-  // using deterministic math on user fields so data looks realistic
   return users.slice(0, 4).map((user: Record<string, unknown>, i: number) => {
     const seed = (user.id as number) * 137;
     const scale = [1.0, 0.74, 0.50, 0.25][i];

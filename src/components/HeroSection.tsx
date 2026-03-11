@@ -1,6 +1,3 @@
-// components/HeroSection.tsx
-// Above-the-fold section. Scroll CTA leads into FeatureSection.
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { tokens } from '../tokens';
@@ -20,7 +17,6 @@ export const HeroSection: React.FC = () => (
     }}
     aria-label="Hero"
   >
-    {/* Background grid pattern */}
     <div
       aria-hidden
       style={{
@@ -89,7 +85,6 @@ export const HeroSection: React.FC = () => (
           across every compute dimension.
         </p>
 
-        {/* Scroll CTA */}
         <motion.a
           href="#feature"
           animate={{ y: [0, 6, 0] }}

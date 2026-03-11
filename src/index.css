@@ -2,41 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Design Tokens ────────────────────────────────────────────── */
+/* Design Tokens */
 :root {
-  /* Backgrounds */
   --color-bg-primary:      #f0f1ec;
   --color-bg-secondary:    #e3e4de;
   --color-bg-card:         #ffffff;
   --color-bg-card-hover:   #f9faf6;
-
-  /* Borders */
   --color-border-subtle:   #d4d7ce;
   --color-border-accent:   #3ddc84;
-
-  /* Text */
   --color-text-primary:    #080d0a;
   --color-text-secondary:  #1e2420;
   --color-text-muted:      #5a5f58;
-
-  /* Accent */
   --color-accent-green:    #3ddc84;
   --color-accent-green-dim: color-mix(in srgb, #3ddc84 20%, transparent);
   --color-accent-success:  #1a7a4a;
   --color-accent-error:    #d93f3f;
   --color-accent-warning:  #e8a020;
-
-  /* Chart */
   --color-bar-fill:        #3ddc84;
   --color-bar-track:       #d0d4c8;
-
-  /* Shadows */
   --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
   --shadow-glow: 0 0 0 1px rgba(61,220,132,0.3), 0 8px 32px rgba(61,220,132,0.15);
   --shadow-card-hover: 0 0 0 1px rgba(61,220,132,0.35), 0 4px 20px rgba(0,0,0,0.08), 0 12px 40px rgba(61,220,132,0.2), 0 24px 60px rgba(0,0,0,0.06);
 }
 
-/* ─── Dark Mode Tokens ─────────────────────────────────────────── */
+/* Dark Mode */
 .dark {
   --color-bg-primary:      #0d1117;
   --color-bg-secondary:    #161b22;
@@ -64,7 +53,6 @@
   --shadow-card-hover: 0 0 0 1px rgba(61,220,132,0.45), 0 4px 20px rgba(0,0,0,0.25), 0 12px 40px rgba(61,220,132,0.25), 0 24px 60px rgba(0,0,0,0.15);
 }
 
-/* ─── Base Styles ──────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -94,7 +82,6 @@ body {
   scroll-behavior: smooth;
 }
 
-/* ─── Modern CSS: Fluid type with clamp() ──────────────────────── */
 .text-display {
   font-family: 'Inter', sans-serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -111,24 +98,6 @@ body {
   color: var(--color-accent-green);
 }
 
-.text-mono {
-  font-family: 'Inter', sans-serif;
-}
-
-/* ─── Inter Utilities ───────────────────────────────────────────── */
-.font-inter-light    { font-family: 'Inter', sans-serif; font-weight: 300; }
-.font-inter-regular  { font-family: 'Inter', sans-serif; font-weight: 400; }
-.font-inter-medium   { font-family: 'Inter', sans-serif; font-weight: 500; }
-.font-inter-semibold { font-family: 'Inter', sans-serif; font-weight: 600; }
-.font-inter-bold     { font-family: 'Inter', sans-serif; font-weight: 700; }
-
-.font-inter-tabular {
-  font-family: 'Inter', sans-serif;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
-}
-
-/* ─── Card Base ────────────────────────────────────────────────── */
 .card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border-subtle);
@@ -142,33 +111,8 @@ body {
   border-color: var(--color-border-accent);
 }
 
-/* ─── Modern CSS: Container queries ───────────────────────────── */
 .cluster-card-container {
-  container-type: inline-size;
-  container-name: cluster-card;
   overflow: visible;
-}
-
-@container cluster-card (max-width: 200px) {
-  .cluster-card-label {
-    font-size: 0.7rem;
-  }
-  .cluster-card-value {
-    font-size: 0.85rem;
-  }
-}
-
-/* ─── Bar Track ────────────────────────────────────────────────── */
-.bar-track {
-  background: var(--color-bar-track);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.bar-fill {
-  background: var(--color-bar-fill);
-  border-radius: 4px;
-  transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .cluster-bar-button:hover .cluster-bar-fill {
@@ -184,12 +128,11 @@ body {
   transition: box-shadow 0.2s ease;
 }
 
-/* Prevent bar shift on hover — fixed layout */
+/* Prevents bar layout shift on hover */
 .bar-chart-container {
   contain: layout;
 }
 
-/* ─── Reduced Motion ───────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -198,19 +141,16 @@ body {
   }
 }
 
-/* ─── Scrollbar ────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
 ::-webkit-scrollbar-thumb { background: var(--color-border-subtle); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-accent-green); }
 
-/* ─── Selection ────────────────────────────────────────────────── */
 ::selection {
   background: var(--color-accent-green-dim);
   color: var(--color-text-primary);
 }
 
-/* ─── Logical properties for layout ───────────────────────────── */
 .section-wrapper {
   padding-inline: clamp(1rem, 5vw, 4rem);
   padding-block: clamp(1rem, 3vh, 2rem);
@@ -218,7 +158,6 @@ body {
   margin-inline: auto;
 }
 
-/* ─── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .section-wrapper {
     padding-inline: 1rem;

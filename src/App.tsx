@@ -1,7 +1,3 @@
-// App.tsx
-// Root layout: nav, hero, feature section.
-// QueryClientProvider wraps everything for TanStack Query caching.
-
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -10,7 +6,6 @@ import { HeroSection } from './components/HeroSection';
 import { FeatureSection } from './components/FeatureSection';
 import { ThemeToggle } from './components/ThemeToggle';
 
-// Single QueryClient instance — data is cached here between renders
 const queryClient = new QueryClient();
 
 const Nav: React.FC = () => (
@@ -65,11 +60,9 @@ export default function App() {
       <div style={{ background: tokens.colors.bgPrimary, minHeight: '100vh' }}>
         <Nav />
         <main>
-          <div style={{ paddingTop: '0' }}>
-            <HeroSection />
-            <div id="feature">
-              <FeatureSection />
-            </div>
+          <HeroSection />
+          <div id="feature">
+            <FeatureSection />
           </div>
         </main>
       </div>

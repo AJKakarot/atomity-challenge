@@ -1,12 +1,9 @@
-// components/Badge.tsx
-// A small pill label. Built from scratch — no library.
-
 import React from 'react';
 import { tokens } from '../tokens';
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'mono';
+  variant?: 'default' | 'success' | 'mono';
 }
 
 const variantStyles: Record<string, React.CSSProperties> = {
@@ -19,16 +16,6 @@ const variantStyles: Record<string, React.CSSProperties> = {
     background: 'color-mix(in srgb, var(--color-accent-success) 12%, transparent)',
     color: tokens.colors.accentSuccess,
     border: `1px solid color-mix(in srgb, var(--color-accent-success) 30%, transparent)`,
-  },
-  warning: {
-    background: 'color-mix(in srgb, var(--color-accent-warning) 12%, transparent)',
-    color: tokens.colors.accentWarning,
-    border: `1px solid color-mix(in srgb, var(--color-accent-warning) 30%, transparent)`,
-  },
-  error: {
-    background: 'color-mix(in srgb, var(--color-accent-error) 12%, transparent)',
-    color: tokens.colors.accentError,
-    border: `1px solid color-mix(in srgb, var(--color-accent-error) 30%, transparent)`,
   },
   mono: {
     background: tokens.colors.bgSecondary,
